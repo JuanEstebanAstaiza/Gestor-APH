@@ -1,0 +1,191 @@
+-- Schema inicial — Gestor APH
+-- NO usar alembic. Aplicar directamente:
+-- docker exec -i gestoraph-postgres-1 psql -U postgres -d gestor_aph < backend/init_schema.sql
+
+-- Enums
+CREATE TYPE IF NOT EXISTS user_role AS ENUM ('admin', 'consejo', 'vigilancia', 'residente');
+CREATE TYPE IF NOT EXISTS user_status AS ENUM ('active', 'suspended', 'pending');
+CREATE TYPE IF NOT EXISTS visitor_status AS ENUM ('approved', 'pending', 'revoked', 'completed');
+CREATE TYPE IF NOT EXISTS auth_status AS ENUM ('pending', 'approved', 'rejected', 'expired');
+CREATE TYPE IF NOT EXISTS census_type AS ENUM ('owner', 'tenant', 'occupant');
+CREATE TYPE IF NOT EXISTS asset_type AS ENUM ('apartment', 'parking', 'storage', 'commercial');
+
+-- Users
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(512) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50),
+    role user_role NOT NULL,
+    status user_status NOT NULL DEFAULT 'active',
+    last_login TIMESTAMPTZ,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Refresh tokens
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    token_hash VARCHAR(512) UNIQUE NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    revoked BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Document categories
+CREATE TABLE IF NOT EXISTS document_categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+    parent_id INTEGER REFERENCES document_categories(id),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Seed categories
+INSERT INTO document_categories (name, description) VALUES
+('Actas', 'Actas de asamblea y consejo'),
+('Reglamentos', 'Reglamento de propiedad horizontal'),
+('Financiero', 'Estados financieros, facturas'),
+('Tecnico', 'Informes técnicos, mantenimiento'),
+('Legal', 'Documentos legales, contratos'),
+('Comunicacion', 'Circulares, avisos'),
+('Censo', 'Documentos de residentes')
+ON CONFLICT (name) DO NOTHING;
+
+-- Assets
+CREATE TABLE IF NOT EXISTS assets (
+    id SERIAL PRIMARY KEY,
+    asset_type asset_type NOT NULL,
+    unit_number VARCHAR(50) NOT NULL,
+    floor INTEGER,
+    area_sqm NUMERIC(10,2),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Census residents
+CREATE TABLE IF NOT EXISTS census_residents (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER UNIQUE REFERENCES users(id),
+    property_type census_type NOT NULL,
+    move_in_date DATE,
+    move_out_date DATE,
+    lease_end DATE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Resident assets link
+CREATE TABLE IF NOT EXISTS resident_assets (
+    id SERIAL PRIMARY KEY,
+    resident_id INTEGER NOT NULL REFERENCES census_residents(id),
+    asset_id INTEGER NOT NULL REFERENCES assets(id),
+    assigned_at TIMESTAMPTZ DEFAULT NOW(),
+    is_primary BOOLEAN DEFAULT FALSE
+);
+
+-- Resident files
+CREATE TABLE IF NOT EXISTS resident_files (
+    id SERIAL PRIMARY KEY,
+    resident_id INTEGER NOT NULL REFERENCES census_residents(id),
+    file_name VARCHAR(255) NOT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    file_type VARCHAR(50),
+    file_size BIGINT,
+    uploaded_by INTEGER NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Visitors
+CREATE TABLE IF NOT EXISTS visitors (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    id_document VARCHAR(100) NOT NULL,
+    vehicle_plate VARCHAR(20),
+    resident_id INTEGER REFERENCES census_residents(id),
+    status visitor_status DEFAULT 'pending',
+    authorized_by INTEGER REFERENCES users(id),
+    entry_time TIMESTAMPTZ,
+    exit_time TIMESTAMPTZ,
+    notes TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Authorizations
+CREATE TABLE IF NOT EXISTS authorizations (
+    id SERIAL PRIMARY KEY,
+    requester_id INTEGER NOT NULL REFERENCES census_residents(id),
+    target_type VARCHAR(50) NOT NULL,
+    target_desc TEXT NOT NULL,
+    status auth_status DEFAULT 'pending',
+    approved_by INTEGER REFERENCES users(id),
+    approved_at TIMESTAMPTZ,
+    expiry_date TIMESTAMPTZ,
+    notes TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Documents
+CREATE TABLE IF NOT EXISTS documents (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    file_path VARCHAR(500) NOT NULL,
+    file_type VARCHAR(50),
+    file_size BIGINT,
+    category_id INTEGER REFERENCES document_categories(id),
+    source_type VARCHAR(50),
+    source_ref VARCHAR(255),
+    classified_by VARCHAR(50),
+    is_public BOOLEAN DEFAULT FALSE,
+    share_token VARCHAR(64) UNIQUE,
+    share_expires_at TIMESTAMPTZ,
+    created_by INTEGER NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Document metadata
+CREATE TABLE IF NOT EXISTS document_metadata (
+    id SERIAL PRIMARY KEY,
+    document_id INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+    key VARCHAR(100) NOT NULL,
+    value TEXT NOT NULL
+);
+
+-- Document versions
+CREATE TABLE IF NOT EXISTS document_versions (
+    id SERIAL PRIMARY KEY,
+    document_id INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+    file_path VARCHAR(500) NOT NULL,
+    version_num INTEGER NOT NULL,
+    changed_by INTEGER NOT NULL REFERENCES users(id),
+    change_note TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Activity log
+CREATE TABLE IF NOT EXISTS activity_log (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    action VARCHAR(100) NOT NULL,
+    entity_type VARCHAR(50) NOT NULL,
+    entity_id INTEGER,
+    details JSONB,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);

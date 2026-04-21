@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker compose *)",
+      "Bash(uv pip *)",
+      "Bash(pip --version)",
+      "Bash(where python *)",
+      "Bash(where python3 *)",
+      "Bash(where pip *)",
+      "Bash(winget list *)",
+      "Bash(winget search *)",
+      "Bash(winget install *)",
+      "Bash(export PATH=\"/c/Program Files/Python312:$PATH\")",
+      "Read(//c/Users/akali/AppData/Local/Programs/Python/Python312/**)",
+      "Read(//c/Users/akali/AppData/Local/Microsoft/WindowsApps/**)",
+      "Bash(C:/Users/akali/AppData/Local/Programs/Python/Python312/python.exe *)",
+      "Bash(export PATH=\"/c/Users/akali/AppData/Local/Programs/Python/Python312/Scripts:$PATH\")",
+      "Bash(uv venv *)",
+      "Bash(python3 *)",
+      "Bash(uv run *)",
+      "Bash(.venv/Scripts/python.exe -c ' *)",
+      "Bash(docker exec gestoraph-postgres-1 *)",
+      "Bash(docker cp *)",
+      "Bash(docker exec *)",
+      "Bash(npm install *)",
+      "Bash(where node *)",
+      "Bash(where npm *)",
+      "Read(//c/Program Files/nodejs/**)",
+      "Read(//c/Users/akali/AppData/Local/Programs/**)",
+      "Bash(\"C:/Program Files/nodejs/node.exe\" --version)",
+      "Bash(\"C:/Program Files/nodejs/npx.cmd\" --version)",
+      "Bash(npx npm *)",
+      "Bash(\"C:/Program Files/nodejs/npm.cmd\" install)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
+      "Bash(curl *)",
+      "Bash(pip install *)",
+      "Bash(npm --version)",
+      "Bash(docker --version)",
+      "Bash(C:/Users/akali/AppData/Local/Microsoft/WindowsApps/python *)"
+    ]
+  }
+}
