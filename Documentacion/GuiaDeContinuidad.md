@@ -26,7 +26,23 @@ Overview tecnico del stack y setup.
 
 ---
 
-## 2. Estado actual del proyecto
+## 2. Estado de fases
+
+| Fase | Nombre | Estado | Archivo |
+|------|--------|--------|---------|
+| 10 | Services y Tasks | PENDIENTE | [PHASE_10_SERVICES_AND_TASKS.md](fases/PHASE_10_SERVICES_AND_TASKS.md) |
+| 11 | Modulo A — Gestion Financiera | PENDIENTE | [PHASE_11_MODULO_A_FINANCIERO.md](fases/PHASE_11_MODULO_A_FINANCIERO.md) |
+| 12 | Modulo C — Atencion y Comunicacion | PENDIENTE | [PHASE_12_MODULO_C_ATENCION.md](fases/PHASE_12_MODULO_C_ATENCION.md) |
+| 13 | Modulo G — Reservas y Convivencia | PENDIENTE | [PHASE_13_MODULO_G_RESERVAS.md](fases/PHASE_13_MODULO_G_RESERVAS.md) |
+| 14 | Modulo F — Asambleas y Consejo | PENDIENTE | [PHASE_14_MODULO_F_ASAMBLEAS.md](fases/PHASE_14_MODULO_F_ASAMBLEAS.md) |
+| 15 | Modulo D — Directorio de Proveedores | PENDIENTE | [PHASE_15_MODULO_D_PROVEEDORES.md](fases/PHASE_15_MODULO_D_PROVEEDORES.md) |
+| 16 | UI/UX Refinement | PENDIENTE | [PHASE_16_UI_UX.md](fases/PHASE_16_UI_UX.md) |
+| 17 | Testing Completo | PENDIENTE | [PHASE_17_TESTING.md](fases/PHASE_17_TESTING.md) |
+| 18 | Docker Production | PENDIENTE | [PHASE_18_DOCKER_PRODUCTION.md](fases/PHASE_18_DOCKER_PRODUCTION.md) |
+
+---
+
+## 3. Estado actual del proyecto
 
 El proyecto tiene **codigo base completo** pero **NO esta en marcha**:
 
@@ -92,7 +108,7 @@ Gestor APH/
 
 ---
 
-## 3. Poner en marcha (primer paso obligatorio)
+## 4. Poner en marcha (primer paso obligatorio)
 
 El siguiente agente DEBE ejecutar estos pasos antes de cualquier desarrollo:
 
@@ -139,65 +155,79 @@ Abrir `http://localhost:5173` — debe mostrar la pagina de Login.
 
 ## 4. Plan de desarrollo por fases
 
+### Sistema de tracking de fases
+Cada fase tiene un archivo detallado en `Documentacion/fases/PHASE_XX_NOMBRE.md` con:
+- Schema SQL exacto a agregar
+- Backend deliverables (schemas, services, routers)
+- Frontend deliverables (componentes)
+- Decisiones técnicas
+- Checklist de completado
+
 ### Fase 10: Services y Tasks (Backend)
-Crear:
-- `backend/src/services/auth_service.py` — logica de auth avanzada (forgot password, token rotation)
-- `backend/src/services/file_service.py` — cloud storage (S3/R2), signed URLs
-- `backend/src/services/document_service.py` — auto-classification, search index
-- `backend/src/services/census_service.py` — aggregation, statistics
+**Estado: PENDIENTE** — Ver [PHASE_10_SERVICES_AND_TASKS.md](fases/PHASE_10_SERVICES_AND_TASKS.md)
+- `backend/src/services/auth_service.py` — forgot password, token rotation, admin seed
+- `backend/src/services/file_service.py` — cloud storage (MVP: filesystem local)
+- `backend/src/services/document_service.py` — auto-classification, search, share tokens
+- `backend/src/services/census_service.py` — stats, export, profile
 - `backend/src/tasks/auto_classify.py` — scheduled classification
+- Background task en `main.py`
 
 ### Fase 11: Modulo A — Gestion Financiera
-- Tablas: `payments`, `invoices`, `accounts`, `balance_records`
+**Estado: PENDIENTE** — Ver [PHASE_11_MODULO_A_FINANCIERO.md](fases/PHASE_11_MODULO_A_FINANCIERO.md)
+- Tablas: `invoices`, `payments`, `balance_records`, `accounts`
 - Routers: `/api/finance/invoices`, `/api/finance/payments`, `/api/finance/balance`
-- Frontend: paginas de cuentas de cobro, estado de cartera, paz y salvo
-- Importacion de datos contables
+- Services: `finance_service.py`, `notification_service.py`
+- Frontend: InvoiceDashboard, PaymentHistory, BalanceView, PazYSalvo, ImportData
 
 ### Fase 12: Modulo C — Atencion y Comunicacion
-- Tablas: `pqrs`, `faq_entries`, `circulars`, `communications`
+**Estado: PENDIENTE** — Ver [PHASE_12_MODULO_C_ATENCION.md](fases/PHASE_12_MODULO_C_ATENCION.md)
+- Tablas: `pqrs`, `pqrs_attachments`, `faq_entries`, `circulars`, `communications`
 - Routers: `/api/pqrs`, `/api/faq`, `/api/circulars`
-- Servicio de email/WhatsApp
-- Frontend: modulo PQRS, FAQ admin, envio de circulares
+- Services: `communication_service.py`, `email_service.py`
+- Frontend: PQRSForm, PQRSList, FAQAdmin, FAQView, CircularDashboard
 
 ### Fase 13: Modulo G — Reservas y Convivencia
+**Estado: PENDIENTE** — Ver [PHASE_13_MODULO_G_RESERVAS.md](fases/PHASE_13_MODULO_G_RESERVAS.md)
 - Tablas: `reservations`, `infractions`, `regulations`
 - Routers: `/api/reservations`, `/api/infractions`
-- Calendario de areas comunes
-- Validacion de cartera para reservas
-- Frontend: calendario de reservas, modulo de sanciones
+- Services: `reservation_service.py`, `infraction_service.py`
+- Frontend: CalendarView, ReservationForm, InfractionList, RegulationView
 
 ### Fase 14: Modulo F — Asambleas y Consejo
-- Tablas: `assemblies`, `votes`, `agendas`, `minutes`
-- Routers: `/api/assemblies`, `/api/votes`
-- Quorum tracking, votacion digital
-- Frontend: gestion de asambleas, repositorio de actas
+**Estado: PENDIENTE** — Ver [PHASE_14_MODULO_F_ASAMBLEAS.md](fases/PHASE_14_MODULO_F_ASAMBLEAS.md)
+- Tablas: `assemblies`, `agendas`, `assembly_attendance`, `votes`, `minutes`, `task_followups`
+- Routers: `/api/assemblies`, `/api/tasks`
+- Services: `assembly_service.py`, `task_service.py`
+- Frontend: AssemblyList, AssemblyDetail, AgendaBuilder, AttendanceTracker, VoteForm, MinutesView, TaskList
 
 ### Fase 15: Modulo D — Directorio de Proveedores
-- Tablas: `providers`, `maintenance_alerts`
+**Estado: PENDIENTE** — Ver [PHASE_15_MODULO_D_PROVEEDORES.md](fases/PHASE_15_MODULO_D_PROVEEDORES.md)
+- Tablas: `providers`, `provider_contracts`, `maintenance_alerts`
 - Routers: `/api/providers`, `/api/maintenance`
-- Alertas de vencimiento de contratos/mantenimiento
-- Frontend: directorio de proveedores, dashboard de alertas
+- Services: `provider_service.py`, `alert_service.py`
+- Frontend: ProviderList, ProviderForm, ContractView, AlertDashboard, MaintenanceCalendar
 
 ### Fase 16: UI/UX refinamiento
-- Tema visual completo (no inline styles)
-- Sidebar con navegacion real por modulo
-- Formularios completos con validacion
+**Estado: PENDIENTE** — Ver [PHASE_16_UI_UX.md](fases/PHASE_16_UI_UX.md)
+- Tema CSS completo con variables (eliminar inline styles)
+- Sidebar con navegación real por módulo
+- Formularios completos con validación
 - Pagination UI en DataTable
-- Loading states, error handling
-- Responsive design
+- Responsive design mobile-first
+- Component library: Button, Input, Modal, Toast, Badge
 
 ### Fase 17: Testing completo
-- Tests de auth (login, refresh, logout, token expiry)
-- Tests de permissions (acceso por rol)
-- Tests de CRUD (users, census, assets, documents)
-- Tests de document upload/share
-- Tests de frontend (components, hooks)
+**Estado: PENDIENTE** — Ver [PHASE_17_TESTING.md](fases/PHASE_17_TESTING.md)
+- Backend: pytest — auth, permissions, CRUD, services
+- Frontend: Vitest — components, hooks, pages
+- Coverage target: 70%
 
 ### Fase 18: Docker production
-- Dockerfile para backend y frontend
-- docker-compose con backend + frontend + postgres
-- Health checks, restart policies
-- Environment configs
+**Estado: PENDIENTE** — Ver [PHASE_18_DOCKER_PRODUCTION.md](fases/PHASE_18_DOCKER_PRODUCTION.md)
+- Dockerfiles multi-stage para backend y frontend
+- docker-compose.production.yml con health checks
+- nginx para frontend serve
+- Environment configs para production
 
 ---
 
@@ -262,35 +292,19 @@ Crear:
 2. Ejecutar: `docker exec -i gestoraph-postgres-1 psql -U postgres -d gestor_aph < backend/init_schema.sql`
 3. Actualizar los models/schemas correspondientes en el backend
 
+**Cada fase documenta el SQL exacto a agregar en su archivo `PHASE_XX_NOMBRE.md`.**
+
 ## 9. Proximo agente: Fase 10
 
-El siguiente agente debe trabajar en **Fase 10: Services y Tasks**:
+El siguiente agente debe trabajar en **Fase 10: Services y Tasks**.
 
-Crear 4 archivos en `backend/src/services/` y 1 en `backend/src/tasks/`:
+Lee el archivo detallado: **[PHASE_10_SERVICES_AND_TASKS.md](fases/PHASE_10_SERVICES_AND_TASKS.md)**
 
-1. **`backend/src/services/auth_service.py`**
-   - `forgot_password(email)`: genera token, envia email
-   - `reset_password(token, new_password)`: valida token, actualiza password
-   - `generate_admin_seed()`: crea usuario admin inicial si no existe
-
-2. **`backend/src/services/file_service.py`**
-   - `upload_file(file)`: upload a S3/R2 (MVP: filesystem local)
-   - `get_signed_url(path, expiry)`: signed URL para download
-   - `delete_file(path)`: removal de archivo
-
-3. **`backend/src/services/document_service.py`**
-   - `auto_classify(document)`: clasificacion por keywords/titulo
-   - `smart_search(query, user_id)`: busqueda con filtros
-   - `generate_share_token(document)`: token de compartimiento
-
-4. **`backend/src/services/census_service.py`**
-   - `get_census_stats()`: resumen del censo
-   - `get_asset_occupants(asset_id)`: ocupantes de un activo
-   - `export_census()`: export CSV del censo
-
-5. **`backend/src/tasks/auto_classify.py`**
-   - Funcion para ejecucion periodic de auto-classification
-   - Usa APScheduler o cron-like
+Este archivo contiene:
+- Schema SQL exacto (si hay nuevos campos)
+- Funciones exactas para cada service
+- Decisiones técnicas específicas
+- Checklist de completado
 
 ---
 
