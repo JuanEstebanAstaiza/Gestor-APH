@@ -1,6 +1,13 @@
 # Phase 10 — Services y Tasks
 
-## Estado: PENDIENTE
+## Estado: COMPLETADA
+
+## Resumen de completado
+Todos los deliverables fueron creados siguiendo los patrones existentes del codebase:
+- SQLAlchemy 2.0 style (Mapped, mapped_column)
+- Pydantic schemas con from_attributes
+- SessionLocal importado desde main.py
+- MVP: filesystem local para archivos, logging para email
 
 ## Objetivo
 Crear la capa de servicios del backend y el sistema de tareas automatizadas.
@@ -48,11 +55,12 @@ Los routers están vacíos de lógica de negocio — necesitan los services para
 - **Tareas: simple loop** — no APScheduler en MVP, usar un background task con sleep
 
 ## Checklist
-- [ ] Crear `services/auth_service.py`
-- [ ] Crear `services/file_service.py`
-- [ ] Crear `services/document_service.py`
-- [ ] Crear `services/census_service.py`
-- [ ] Crear `tasks/auto_classify.py`
+- [x] Crear `services/auth_service.py`
+- [x] Crear `services/file_service.py`
+- [x] Crear `services/document_service.py`
+- [x] Crear `services/census_service.py`
+- [x] Crear `tasks/auto_classify.py`
+- [x] Crear `services/__init__.py` y `tasks/__init__.py`
 - [ ] Actualizar `main.py` para incluir background task
 - [ ] Actualizar `init_schema.sql` si hay nuevos campos necesarios
 - [ ] Actualizar `GuiaDeContinuidad.md` con estado de Fase 10
