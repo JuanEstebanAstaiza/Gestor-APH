@@ -342,3 +342,131 @@ export interface RegulationCreate {
   chapter?: string;
   order?: number;
 }
+
+// Modulo F: Asambleas y Consejo (Fase 14)
+export interface Assembly {
+  id: number;
+  uuid: string;
+  type: string;
+  title: string;
+  description: string | null;
+  date: string;
+  location: string | null;
+  status: string;
+  quorum_required: number;
+  quorum_achieved: boolean;
+  announced_at: string | null;
+  created_by: number;
+  is_active: boolean;
+}
+
+export interface AssemblyCreate {
+  type: string;
+  title: string;
+  description?: string;
+  date: string;
+  location?: string;
+  quorum_required?: number;
+}
+
+export interface Agenda {
+  id: number;
+  assembly_id: number;
+  topic: string;
+  description: string | null;
+  presenter_id: number | null;
+  order: number;
+  duration_minutes: number | null;
+  is_active: boolean;
+}
+
+export interface AgendaCreate {
+  assembly_id: number;
+  topic: string;
+  description?: string;
+  presenter_id?: number;
+  order: number;
+  duration_minutes?: number;
+}
+
+export interface Attendance {
+  id: number;
+  assembly_id: number;
+  resident_id: number;
+  status: string;
+  confirmed_at: string | null;
+}
+
+export interface AttendanceCreate {
+  assembly_id: number;
+  resident_id: number;
+  status?: string;
+}
+
+export interface Vote {
+  id: number;
+  assembly_id: number;
+  agenda_item_id: number | null;
+  voter_id: number;
+  option: string;
+  notes: string | null;
+  voted_at: string;
+}
+
+export interface VoteCreate {
+  assembly_id: number;
+  agenda_item_id?: number;
+  option: string;
+  notes?: string;
+}
+
+export interface VoteSummary {
+  agenda_item_id: number | null;
+  topic: string | null;
+  favor: number;
+  en_contra: number;
+  abstencion: number;
+  total: number;
+}
+
+export interface Minute {
+  id: number;
+  uuid: string;
+  assembly_id: number;
+  title: string;
+  content: string;
+  file_path: string | null;
+  approved_by: number | null;
+  approved_at: string | null;
+  version: number;
+  is_active: boolean;
+}
+
+export interface MinuteCreate {
+  assembly_id: number;
+  title: string;
+  content: string;
+  file_path?: string;
+}
+
+export interface TaskFollowup {
+  id: number;
+  uuid: string;
+  assembly_id: number | null;
+  title: string;
+  description: string;
+  assigned_to: number;
+  deadline: string | null;
+  status: string;
+  completed_at: string | null;
+  notes: string | null;
+  is_active: boolean;
+}
+
+export interface TaskCreate {
+  assembly_id?: number;
+  title: string;
+  description: string;
+  assigned_to: number;
+  deadline?: string;
+}

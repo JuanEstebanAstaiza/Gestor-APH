@@ -405,3 +405,103 @@ CREATE TABLE IF NOT EXISTS regulations (
     updated_by INTEGER REFERENCES users(id),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- =============================================
+-- Modulo F: Asambleas y Consejo (Fase 14)
+-- =============================================
+
+-- Enums para asambleas
+CREATE TYPE IF NOT EXISTS assembly_type AS ENUM ('ordinaria', 'extraordinaria', 'especial');
+CREATE TYPE IF NOT EXISTS assembly_status AS ENUM ('draft', 'announced', 'in_progress', 'completed', 'cancelled');
+CREATE TYPE IF NOT EXISTS attendance_status AS ENUM ('pending', 'confirmed', 'declined', 'absent');
+CREATE TYPE IF NOT EXISTS vote_option AS ENUM ('favor', 'en_contra', 'abstencion');
+CREATE TYPE IF NOT EXISTS task_status AS ENUM ('open', 'in_progress', 'completed', 'overdue', 'dismissed');
+
+-- Asambleas
+CREATE TABLE IF NOT EXISTS assemblies (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    type assembly_type NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    date TIMESTAMPTZ NOT NULL,
+    location VARCHAR(255),
+    status assembly_status DEFAULT 'draft',
+    quorum_required INTEGER DEFAULT 0,
+    quorum_achieved BOOLEAN DEFAULT FALSE,
+    announced_at TIMESTAMPTZ,
+    created_by INTEGER NOT NULL REFERENCES users(id),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Agendas
+CREATE TABLE IF NOT EXISTS agendas (
+    id SERIAL PRIMARY KEY,
+    assembly_id INTEGER NOT NULL REFERENCES assemblies(id) ON DELETE CASCADE,
+    topic VARCHAR(255) NOT NULL,
+    description TEXT,
+    presenter INTEGER REFERENCES users(id),
+    "order" INTEGER NOT NULL,
+    duration_minutes INTEGER,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Asistencia a asambleas
+CREATE TABLE IF NOT EXISTS assembly_attendance (
+    id SERIAL PRIMARY KEY,
+    assembly_id INTEGER NOT NULL REFERENCES assemblies(id) ON DELETE CASCADE,
+    resident_id INTEGER NOT NULL REFERENCES census_residents(id),
+    status attendance_status DEFAULT 'pending',
+    confirmed_at TIMESTAMPTZ,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Votaciones
+CREATE TABLE IF NOT EXISTS votes (
+    id SERIAL PRIMARY KEY,
+    assembly_id INTEGER NOT NULL REFERENCES assemblies(id) ON DELETE CASCADE,
+    agenda_item_id INTEGER REFERENCES agendas(id) ON DELETE CASCADE,
+    voter_id INTEGER NOT NULL REFERENCES census_residents(id),
+    option vote_option NOT NULL,
+    notes TEXT,
+    voted_at TIMESTAMPTZ DEFAULT NOW(),
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- Actas
+CREATE TABLE IF NOT EXISTS minutes (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    assembly_id INTEGER NOT NULL REFERENCES assemblies(id),
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    file_path VARCHAR(500),
+    approved_by INTEGER REFERENCES users(id),
+    approved_at TIMESTAMPTZ,
+    version INTEGER DEFAULT 1,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_by INTEGER NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Seguimiento de tareas
+CREATE TABLE IF NOT EXISTS task_followups (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    assembly_id INTEGER REFERENCES assemblies(id),
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    assigned_to INTEGER NOT NULL REFERENCES users(id),
+    deadline DATE,
+    status task_status DEFAULT 'open',
+    completed_at TIMESTAMPTZ,
+    notes TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
