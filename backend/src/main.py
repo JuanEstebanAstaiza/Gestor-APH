@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from src.config import settings
-from src.routers import auth, users, visitors, authorizations, census, assets, documents, categories, audit
+from src.routers import auth, users, visitors, authorizations, census, assets, documents, categories, audit, finance
 
 
 engine = create_engine(settings.database_url)
@@ -43,6 +43,7 @@ app.include_router(assets.router, prefix="/api/assets", tags=["assets"])
 app.include_router(documents.router, prefix="/api/documents", tags=["documents"])
 app.include_router(categories.router, prefix="/api/categories", tags=["categories"])
 app.include_router(audit.router, prefix="/api/audit", tags=["audit"])
+app.include_router(finance.router, prefix="/api/finance", tags=["finance"])
 
 
 @app.get("/health")

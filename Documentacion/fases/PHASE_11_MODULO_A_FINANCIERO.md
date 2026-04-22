@@ -1,6 +1,15 @@
 # Phase 11 — Modulo A: Gestión Financiera y Cobranza
 
-## Estado: PENDIENTE
+## Estado: COMPLETADA
+
+## Resumen de completado
+Todos los deliverables fueron creados siguiendo los patrones existentes del codebase:
+- Models: SQLAlchemy 2.0 style (Mapped, mapped_column) con enums
+- Schemas: Pydantic con from_attributes
+- Services: SessionLocal desde main.py, balance computed on-demand
+- Routers: registrado en main.py con prefix `/api/finance`
+- Frontend: inline styles temporarios (Fase 16), TanStack Query, axios
+- Enums nuevos: `invoice_status`, `payment_status`
 
 ## Objetivo
 Implementar el módulo financiero completo: cuentas de cobro, pagos, balance, paz y salvo.
@@ -103,14 +112,17 @@ CREATE TABLE IF NOT EXISTS accounts (
 - **Balance computed on-demand** — no materializar en tabla, calcular desde invoices + payments
 
 ## Checklist
-- [ ] Agregar tablas a `init_schema.sql`
-- [ ] Crear `schemas/finance.py`
-- [ ] Crear `services/finance_service.py`
-- [ ] Crear `services/notification_service.py`
-- [ ] Crear `routers/finance.py`
-- [ ] Crear `pages/finance/InvoiceDashboard.tsx`
-- [ ] Crear `pages/finance/PaymentHistory.tsx`
-- [ ] Crear `pages/finance/BalanceView.tsx`
-- [ ] Crear `pages/finance/PazYSalvo.tsx`
-- [ ] Crear `pages/finance/ImportData.tsx`
-- [ ] Actualizar `GuiaDeContinuidad.md` con estado de Fase 11
+- [x] Agregar tablas a `init_schema.sql` (accounts, invoices, payments, balance_records + enums)
+- [x] Crear `models/finance.py` (Account, Invoice, Payment, BalanceRecord)
+- [x] Crear `schemas/finance.py` (AccountCreate/Update/Out, InvoiceCreate/Update/Out, PaymentCreate/Out, BalanceOut, PazYSalvoOut)
+- [x] Crear `services/finance_service.py` (generate_invoices, process_payment, get_balance, paz_y_salvo, financial_report)
+- [x] Crear `services/notification_service.py` (notify_overdue_residents)
+- [x] Crear `routers/finance.py` (CRUD accounts/invoices/payments, balance, paz-y-salvo, report, notify)
+- [x] Registrar router en `main.py` con prefix `/api/finance`
+- [x] Crear types en `frontend/src/types/index.ts`
+- [x] Crear `pages/finance/InvoiceDashboard.tsx`
+- [x] Crear `pages/finance/PaymentHistory.tsx`
+- [x] Crear `pages/finance/BalanceView.tsx`
+- [x] Crear `pages/finance/PazYSalvo.tsx`
+- [x] Crear `pages/finance/ImportData.tsx`
+- [x] Actualizar `GuiaDeContinuidad.md` con estado de Fase 11

@@ -31,7 +31,7 @@ Overview tecnico del stack y setup.
 | Fase | Nombre | Estado | Archivo |
 |------|--------|--------|---------|
 | 10 | Services y Tasks | COMPLETADA | [PHASE_10_SERVICES_AND_TASKS.md](fases/PHASE_10_SERVICES_AND_TASKS.md) |
-| 11 | Modulo A — Gestion Financiera | PENDIENTE | [PHASE_11_MODULO_A_FINANCIERO.md](fases/PHASE_11_MODULO_A_FINANCIERO.md) |
+| 11 | Modulo A — Gestion Financiera | COMPLETADA | [PHASE_11_MODULO_A_FINANCIERO.md](fases/PHASE_11_MODULO_A_FINANCIERO.md) |
 | 12 | Modulo C — Atencion y Comunicacion | PENDIENTE | [PHASE_12_MODULO_C_ATENCION.md](fases/PHASE_12_MODULO_C_ATENCION.md) |
 | 13 | Modulo G — Reservas y Convivencia | PENDIENTE | [PHASE_13_MODULO_G_RESERVAS.md](fases/PHASE_13_MODULO_G_RESERVAS.md) |
 | 14 | Modulo F — Asambleas y Consejo | PENDIENTE | [PHASE_14_MODULO_F_ASAMBLEAS.md](fases/PHASE_14_MODULO_F_ASAMBLEAS.md) |

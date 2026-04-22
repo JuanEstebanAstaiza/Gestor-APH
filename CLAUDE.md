@@ -46,7 +46,7 @@ frontend/src/
 
 ## Development phases (each has detailed doc in `Documentacion/fases/`)
 10. Services + Tasks — [PHASE_10_SERVICES_AND_TASKS.md](Documentacion/fases/PHASE_10_SERVICES_AND_TASKS.md) **COMPLETADA**
-11. Modulo A — Gestion Financiera — [PHASE_11_MODULO_A_FINANCIERO.md](Documentacion/fases/PHASE_11_MODULO_A_FINANCIERO.md)
+11. Modulo A — Gestion Financiera — [PHASE_11_MODULO_A_FINANCIERO.md](Documentacion/fases/PHASE_11_MODULO_A_FINANCIERO.md) **COMPLETADA**
 12. Modulo C — Atencion y Comunicacion — [PHASE_12_MODULO_C_ATENCION.md](Documentacion/fases/PHASE_12_MODULO_C_ATENCION.md)
 13. Modulo G — Reservas y Convivencia — [PHASE_13_MODULO_G_RESERVAS.md](Documentacion/fases/PHASE_13_MODULO_G_RESERVAS.md)
 14. Modulo F — Asambleas y Consejo — [PHASE_14_MODULO_F_ASAMBLEAS.md](Documentacion/fases/PHASE_14_MODULO_F_ASAMBLEAS.md)

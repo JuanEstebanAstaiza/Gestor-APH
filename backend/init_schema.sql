@@ -189,3 +189,72 @@ CREATE TABLE IF NOT EXISTS activity_log (
     ip_address VARCHAR(45),
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- =============================================
+-- Modulo A: Gestion Financiera (Fase 11)
+-- =============================================
+
+-- Enum para status de facturas
+CREATE TYPE IF NOT EXISTS invoice_status AS ENUM ('pending', 'sent', 'paid', 'overdue', 'cancelled');
+CREATE TYPE IF NOT EXISTS payment_status AS ENUM ('pending', 'verified', 'rejected');
+
+-- Cuentas bancarias
+CREATE TABLE IF NOT EXISTS accounts (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    bank_name VARCHAR(255),
+    account_number VARCHAR(100),
+    account_type VARCHAR(50),  -- savings, checking, other
+    description TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Facturas / Cuentas de cobro
+CREATE TABLE IF NOT EXISTS invoices (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    resident_id INTEGER NOT NULL REFERENCES census_residents(id),
+    asset_id INTEGER NOT NULL REFERENCES assets(id),
+    period VARCHAR(7) NOT NULL,  -- YYYY-MM
+    amount NUMERIC(12,2) NOT NULL,
+    status invoice_status DEFAULT 'pending',
+    due_date DATE NOT NULL,
+    sent_at TIMESTAMPTZ,
+    paid_at TIMESTAMPTZ,
+    generated_by INTEGER REFERENCES users(id),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Pagos
+CREATE TABLE IF NOT EXISTS payments (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    invoice_id INTEGER NOT NULL REFERENCES invoices(id),
+    amount NUMERIC(12,2) NOT NULL,
+    payment_method VARCHAR(50),  -- bank_transfer, cash, check, other
+    reference_number VARCHAR(100),
+    payment_date DATE NOT NULL,
+    processed_by INTEGER REFERENCES users(id),
+    status payment_status DEFAULT 'pending',
+    notes TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Registros de balance (computados on-demand, no materializados)
+CREATE TABLE IF NOT EXISTS balance_records (
+    id SERIAL PRIMARY KEY,
+    resident_id INTEGER NOT NULL REFERENCES census_residents(id),
+    asset_id INTEGER NOT NULL REFERENCES assets(id),
+    period VARCHAR(7) NOT NULL,  -- YYYY-MM
+    total_due NUMERIC(12,2) NOT NULL,
+    total_paid NUMERIC(12,2) NOT NULL,
+    balance NUMERIC(12,2) NOT NULL,
+    months_overdue INTEGER DEFAULT 0,
+    generated_at TIMESTAMPTZ DEFAULT NOW(),
+    is_active BOOLEAN DEFAULT TRUE
+);

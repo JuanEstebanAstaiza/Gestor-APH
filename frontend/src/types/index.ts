@@ -102,3 +102,87 @@ export interface DocumentCategory {
   description: string | null;
   parent_id: number | null;
 }
+
+// Finance types (Fase 11)
+export interface Account {
+  id: number;
+  name: string;
+  bank_name: string | null;
+  account_number: string | null;
+  account_type: string | null;
+  description: string | null;
+  is_active: boolean;
+}
+
+export interface AccountCreate {
+  name: string;
+  bank_name?: string;
+  account_number?: string;
+  account_type?: string;
+  description?: string;
+}
+
+export interface Invoice {
+  id: number;
+  uuid: string;
+  resident_id: number;
+  asset_id: number;
+  period: string;
+  amount: string;
+  status: string;
+  due_date: string;
+  sent_at: string | null;
+  paid_at: string | null;
+  generated_by: number | null;
+}
+
+export interface InvoiceCreate {
+  resident_id: number;
+  asset_id: number;
+  period: string;
+  amount: string;
+  due_date: string;
+}
+
+export interface Payment {
+  id: number;
+  uuid: string;
+  invoice_id: number;
+  amount: string;
+  payment_method: string | null;
+  reference_number: string | null;
+  payment_date: string;
+  processed_by: number | null;
+  status: string;
+  notes: string | null;
+}
+
+export interface PaymentCreate {
+  invoice_id: number;
+  amount: string;
+  payment_method?: string;
+  reference_number?: string;
+  payment_date: string;
+  notes?: string;
+}
+
+export interface Balance {
+  resident_id: number;
+  total_due: string;
+  total_paid: string;
+  balance: string;
+  months_overdue: number;
+}
+
+export interface PazYSalvo {
+  resident_id: number;
+  is_current: boolean;
+  total_balance: string;
+  months_overdue: number;
+  generated_at: string;
+}
+
+export interface FinancialReport {
+  invoices: Invoice[];
+  payments: Payment[];
+}
