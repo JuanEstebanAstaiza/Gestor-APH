@@ -258,3 +258,84 @@ CREATE TABLE IF NOT EXISTS balance_records (
     generated_at TIMESTAMPTZ DEFAULT NOW(),
     is_active BOOLEAN DEFAULT TRUE
 );
+
+-- =============================================
+-- Modulo C: Atencion y Comunicacion (Fase 12)
+-- =============================================
+
+-- Enum para tipo PQRS
+CREATE TYPE IF NOT EXISTS pqrs_type AS ENUM ('peticion', 'queja', 'reclamo', 'sugerencia');
+CREATE TYPE IF NOT EXISTS pqrs_status AS ENUM ('open', 'in_progress', 'resolved', 'closed', 'dismissed');
+CREATE TYPE IF NOT EXISTS pqrs_priority AS ENUM ('low', 'normal', 'high', 'urgent');
+
+-- PQRS
+CREATE TABLE IF NOT EXISTS pqrs (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    requester_id INTEGER NOT NULL REFERENCES census_residents(id),
+    type pqrs_type NOT NULL,
+    category VARCHAR(50),  -- financiero, convivencia, tecnico, seguridad, otros
+    subject VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    status pqrs_status DEFAULT 'open',
+    priority pqrs_priority DEFAULT 'normal',
+    assigned_to INTEGER REFERENCES users(id),
+    resolved_at TIMESTAMPTZ,
+    response TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Adjuntos PQRS
+CREATE TABLE IF NOT EXISTS pqrs_attachments (
+    id SERIAL PRIMARY KEY,
+    pqrs_id INTEGER NOT NULL REFERENCES pqrs(id) ON DELETE CASCADE,
+    file_name VARCHAR(255) NOT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    file_type VARCHAR(50),
+    uploaded_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- FAQ entries
+CREATE TABLE IF NOT EXISTS faq_entries (
+    id SERIAL PRIMARY KEY,
+    question VARCHAR(500) NOT NULL,
+    answer TEXT NOT NULL,
+    category VARCHAR(50),
+    keywords TEXT[],
+    is_active BOOLEAN DEFAULT TRUE,
+    created_by INTEGER REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Circulares
+CREATE TABLE IF NOT EXISTS circulars (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    target_type VARCHAR(50),  -- all, owners, tenants, specific_tower
+    target_value TEXT,  -- JSON string for complex targeting
+    status VARCHAR(20) DEFAULT 'draft',  -- draft, sent, scheduled
+    sent_at TIMESTAMPTZ,
+    sent_by INTEGER REFERENCES users(id),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Comunicaciones
+CREATE TABLE IF NOT EXISTS communications (
+    id SERIAL PRIMARY KEY,
+    sender_id INTEGER NOT NULL REFERENCES users(id),
+    recipient_id INTEGER NOT NULL REFERENCES census_residents(id),
+    type VARCHAR(20) NOT NULL,  -- email, whatsapp, notification, circular
+    subject VARCHAR(255),
+    content TEXT NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',  -- pending, sent, failed
+    sent_at TIMESTAMPTZ,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);

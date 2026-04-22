@@ -186,3 +186,84 @@ export interface FinancialReport {
   invoices: Invoice[];
   payments: Payment[];
 }
+
+// Communication types (Fase 12)
+export interface PQRS {
+  id: number;
+  uuid: string;
+  requester_id: number;
+  type: string;
+  category: string | null;
+  subject: string;
+  description: string;
+  status: string;
+  priority: string;
+  assigned_to: number | null;
+  resolved_at: string | null;
+  response: string | null;
+  is_active: boolean;
+}
+
+export interface PQRSCreate {
+  requester_id: number;
+  type: string;
+  category?: string;
+  subject: string;
+  description: string;
+  priority?: string;
+}
+
+export interface FAQEntry {
+  id: number;
+  question: string;
+  answer: string;
+  category: string | null;
+  keywords: string[] | null;
+  is_active: boolean;
+}
+
+export interface FAQSearchResponse {
+  data: FAQEntry[];
+  total: number;
+  page: number;
+  page_size: number;
+  has_next: boolean;
+}
+
+export interface FAQCreate {
+  question: string;
+  answer: string;
+  category?: string;
+  keywords?: string[];
+}
+
+export interface Circular {
+  id: number;
+  uuid: string;
+  title: string;
+  content: string;
+  target_type: string | null;
+  target_value: string | null;
+  status: string;
+  sent_at: string | null;
+  sent_by: number | null;
+}
+
+export interface CircularCreate {
+  title: string;
+  content: string;
+  target_type?: string;
+  target_value?: string;
+  status?: string;
+}
+
+export interface Communication {
+  id: number;
+  sender_id: number;
+  recipient_id: number;
+  type: string;
+  subject: string | null;
+  content: string;
+  status: string;
+  sent_at: string | null;
+}

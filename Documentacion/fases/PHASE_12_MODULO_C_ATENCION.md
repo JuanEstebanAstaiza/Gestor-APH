@@ -1,6 +1,15 @@
 # Phase 12 — Modulo C: Atencion y Comunicacion (FAQ/PQRS)
 
-## Estado: PENDIENTE
+## Estado: COMPLETADA
+
+## Resumen de completado
+Todos los deliverables fueron creados siguiendo los patrones existentes del codebase:
+- Models: SQLAlchemy 2.0 style con enums para PQRS
+- Schemas: Pydantic con from_attributes + FAQSearchResponse con model_rebuild
+- Services: SessionLocal desde main.py, email MVP: logging
+- Routers: registrados en main.py con prefixes /api/pqrs, /api/faq, /api/circulars, /api/communications
+- Frontend: inline styles temporarios (Fase 16), TanStack Query, axios
+- Enums nuevos: `pqrs_type`, `pqrs_status`, `pqrs_priority`
 
 ## Objetivo
 Implementar el módulo de atención al residente: FAQ, PQRS, circulares, comunicaciones.
@@ -118,17 +127,21 @@ CREATE TABLE IF NOT EXISTS communications (
 - **WhatsApp: pending** — no implementar en MVP, dejar endpoint preparado
 
 ## Checklist
-- [ ] Agregar tablas a `init_schema.sql`
-- [ ] Crear `schemas/communication.py`
-- [ ] Crear `services/communication_service.py`
-- [ ] Crear `services/email_service.py`
-- [ ] Crear `routers/pqrs.py`
-- [ ] Crear `routers/faq.py`
-- [ ] Crear `routers/circulars.py`
-- [ ] Crear `pages/communication/PQRSForm.tsx`
-- [ ] Crear `pages/communication/PQRSList.tsx`
-- [ ] Crear `pages/communication/FAQAdmin.tsx`
-- [ ] Crear `pages/communication/FAQView.tsx`
-- [ ] Crear `pages/communication/CircularDashboard.tsx`
-- [ ] Crear `pages/communication/CommunicationHistory.tsx`
-- [ ] Actualizar `GuiaDeContinuidad.md` con estado de Fase 12
+- [x] Agregar tablas a `init_schema.sql` (pqrs, pqrs_attachments, faq_entries, circulars, communications + enums)
+- [x] Crear `models/communication.py` (PQRS, PQRSAttachment, FAQEntry, Circular, Communication)
+- [x] Crear `schemas/communication.py` (PQRSCreate/Update/Out, FAQCreate/Update/Out/FAQSearchResponse, CircularCreate/Update/Out, CommunicationOut)
+- [x] Crear `services/communication_service.py` (create_pqrs, update_pqrs_status, search_faq, create_circular, send_circular, send_communication)
+- [x] Crear `services/email_service.py` (send_email, send_bulk_email, send_whatsapp — MVP: logging)
+- [x] Crear `routers/pqrs.py` (CRUD PQRS + assign)
+- [x] Crear `routers/faq.py` (search, CRUD FAQ)
+- [x] Crear `routers/circulars.py` (CRUD + send circular)
+- [x] Crear `routers/communications.py` (list + send communication)
+- [x] Registrar todos los routers en `main.py`
+- [x] Crear types en `frontend/src/types/index.ts`
+- [x] Crear `pages/communication/PQRSForm.tsx`
+- [x] Crear `pages/communication/PQRSList.tsx` (con modal detalle)
+- [x] Crear `pages/communication/FAQAdmin.tsx` (con search)
+- [x] Crear `pages/communication/FAQView.tsx` (vista resident)
+- [x] Crear `pages/communication/CircularDashboard.tsx`
+- [x] Crear `pages/communication/CommunicationHistory.tsx`
+- [x] Actualizar `GuiaDeContinuidad.md` con estado de Fase 12
