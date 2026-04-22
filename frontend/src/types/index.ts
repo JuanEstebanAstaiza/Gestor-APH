@@ -267,3 +267,78 @@ export interface Communication {
   status: string;
   sent_at: string | null;
 }
+
+// Modulo G: Reservas y Convivencia (Fase 13)
+export interface Reservation {
+  id: number;
+  uuid: string;
+  resident_id: number;
+  asset_id: number;
+  area_type: string;
+  area_name: string;
+  start_datetime: string;
+  end_datetime: string;
+  guests_count: number;
+  purpose: string | null;
+  status: string;
+  approved_by: number | null;
+  approved_at: string | null;
+  rejection_reason: string | null;
+  balance_check: boolean;
+  is_active: boolean;
+}
+
+export interface ReservationCreate {
+  resident_id: number;
+  asset_id: number;
+  area_type: string;
+  area_name: string;
+  start_datetime: string;
+  end_datetime: string;
+  guests_count?: number;
+  purpose?: string;
+}
+
+export interface Infraction {
+  id: number;
+  uuid: string;
+  resident_id: number;
+  asset_id: number;
+  category: string;
+  description: string;
+  severity: string;
+  warning_count: number;
+  fine_amount: string | null;
+  status: string;
+  issued_by: number;
+  acknowledged_at: string | null;
+  resolved_at: string | null;
+  is_active: boolean;
+}
+
+export interface InfractionCreate {
+  resident_id: number;
+  asset_id: number;
+  category: string;
+  description: string;
+  severity: string;
+  fine_amount?: string;
+}
+
+export interface Regulation {
+  id: number;
+  title: string;
+  content: string;
+  section_number: string | null;
+  chapter: string | null;
+  order: number | null;
+  is_active: boolean;
+}
+
+export interface RegulationCreate {
+  title: string;
+  content: string;
+  section_number?: string;
+  chapter?: string;
+  order?: number;
+}

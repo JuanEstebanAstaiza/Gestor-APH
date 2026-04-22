@@ -27,10 +27,10 @@ cd frontend && npm install && npm run dev
 backend/src/
   main.py, config.py, dependencies.py
   core/ (security.py, permissions.py, exceptions.py)
-  models/ (user.py, refresh_token.py, visitor.py, authorization.py, census.py, asset.py, resident_asset.py, resident_file.py, document.py, activity_log.py)
-  schemas/ (auth.py, user.py, visitor.py, authorization.py, census.py, asset.py, document.py, category.py, shared.py)
-  routers/ (auth.py, users.py, visitors.py, authorizations.py, census.py, assets.py, documents.py, categories.py, audit.py)
-  services/ (auth_service.py, file_service.py, document_service.py, census_service.py)
+  models/ (user.py, refresh_token.py, visitor.py, authorization.py, census.py, asset.py, resident_asset.py, resident_file.py, document.py, activity_log.py, finance.py, communication.py, reservation.py)
+  schemas/ (auth.py, user.py, visitor.py, authorization.py, census.py, asset.py, document.py, category.py, shared.py, finance.py, communication.py, reservation.py)
+  routers/ (auth.py, users.py, visitors.py, authorizations.py, census.py, assets.py, documents.py, categories.py, audit.py, finance.py, pqrs.py, faq.py, circulars.py, communications.py, reservations.py)
+  services/ (auth_service.py, file_service.py, document_service.py, census_service.py, finance_service.py, notification_service.py, communication_service.py, email_service.py, reservation_service.py, infraction_service.py)
   tasks/ (auto_classify.py)
   tests/
 frontend/src/
@@ -41,14 +41,14 @@ frontend/src/
   styles/ (theme.css)
   types/ (index.ts)
   components/common/ (Layout, Sidebar, Header, DataTable, FileUpload, SearchBar)
-  pages/ (auth, dashboard, users, visitors, authorizations, census, assets, documents, audit, settings)
+  pages/ (auth, dashboard, users, visitors, authorizations, census, assets, documents, audit, settings, finance, communication, reservations, convivencia)
 ```
 
 ## Development phases (each has detailed doc in `Documentacion/fases/`)
 10. Services + Tasks — [PHASE_10_SERVICES_AND_TASKS.md](Documentacion/fases/PHASE_10_SERVICES_AND_TASKS.md) **COMPLETADA**
 11. Modulo A — Gestion Financiera — [PHASE_11_MODULO_A_FINANCIERO.md](Documentacion/fases/PHASE_11_MODULO_A_FINANCIERO.md) **COMPLETADA**
 12. Modulo C — Atencion y Comunicacion — [PHASE_12_MODULO_C_ATENCION.md](Documentacion/fases/PHASE_12_MODULO_C_ATENCION.md) **COMPLETADA**
-13. Modulo G — Reservas y Convivencia — [PHASE_13_MODULO_G_RESERVAS.md](Documentacion/fases/PHASE_13_MODULO_G_RESERVAS.md)
+13. Modulo G — Reservas y Convivencia — [PHASE_13_MODULO_G_RESERVAS.md](Documentacion/fases/PHASE_13_MODULO_G_RESERVAS.md) **COMPLETADA**
 14. Modulo F — Asambleas y Consejo — [PHASE_14_MODULO_F_ASAMBLEAS.md](Documentacion/fases/PHASE_14_MODULO_F_ASAMBLEAS.md)
 15. Modulo D — Directorio de Proveedores — [PHASE_15_MODULO_D_PROVEEDORES.md](Documentacion/fases/PHASE_15_MODULO_D_PROVEEDORES.md)
 16. UI/UX refinement — [PHASE_16_UI_UX.md](Documentacion/fases/PHASE_16_UI_UX.md)

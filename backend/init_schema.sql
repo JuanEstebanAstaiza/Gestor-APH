@@ -339,3 +339,69 @@ CREATE TABLE IF NOT EXISTS communications (
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- =============================================
+-- Modulo G: Reservas y Convivencia (Fase 13)
+-- =============================================
+
+-- Enum para tipo de area comun
+CREATE TYPE IF NOT EXISTS area_type AS ENUM ('bbq', 'salon', 'cancha', 'piscina', 'otros');
+CREATE TYPE IF NOT EXISTS reservation_status AS ENUM ('pending', 'approved', 'rejected', 'cancelled', 'completed');
+CREATE TYPE IF NOT EXISTS infraction_category AS ENUM ('ruido', 'mascotas', 'areas_comunes', 'estacionamiento', 'otros');
+CREATE TYPE IF NOT EXISTS infraction_severity AS ENUM ('minor', 'moderate', 'severe');
+CREATE TYPE IF NOT EXISTS infraction_status AS ENUM ('open', 'acknowledged', 'resolved', 'escalated');
+
+-- Reservas de areas comunes
+CREATE TABLE IF NOT EXISTS reservations (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    resident_id INTEGER NOT NULL REFERENCES census_residents(id),
+    asset_id INTEGER NOT NULL REFERENCES assets(id),
+    area_type area_type NOT NULL,
+    area_name VARCHAR(100) NOT NULL,
+    start_datetime TIMESTAMPTZ NOT NULL,
+    end_datetime TIMESTAMPTZ NOT NULL,
+    guests_count INTEGER DEFAULT 0,
+    purpose TEXT,
+    status reservation_status DEFAULT 'pending',
+    approved_by INTEGER REFERENCES users(id),
+    approved_at TIMESTAMPTZ,
+    rejection_reason TEXT,
+    balance_check BOOLEAN DEFAULT TRUE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Infracciones y sanciones
+CREATE TABLE IF NOT EXISTS infractions (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    resident_id INTEGER NOT NULL REFERENCES census_residents(id),
+    asset_id INTEGER NOT NULL REFERENCES assets(id),
+    category infraction_category NOT NULL,
+    description TEXT NOT NULL,
+    severity infraction_severity NOT NULL,
+    warning_count INTEGER DEFAULT 0,
+    fine_amount NUMERIC(12,2),
+    status infraction_status DEFAULT 'open',
+    issued_by INTEGER NOT NULL REFERENCES users(id),
+    acknowledged_at TIMESTAMPTZ,
+    resolved_at TIMESTAMPTZ,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Reglamento de propiedad horizontal
+CREATE TABLE IF NOT EXISTS regulations (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    section_number VARCHAR(50),
+    chapter VARCHAR(100),
+    "order" INTEGER,
+    is_active BOOLEAN DEFAULT TRUE,
+    updated_by INTEGER REFERENCES users(id),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
