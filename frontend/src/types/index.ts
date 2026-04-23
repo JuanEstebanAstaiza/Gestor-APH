@@ -470,3 +470,127 @@ export interface TaskCreate {
   assigned_to: number;
   deadline?: string;
 }
+
+// Modulo D: Directorio de Proveedores (Fase 15)
+export interface Provider {
+  id: number;
+  uuid: string;
+  name: string;
+  type: string;
+  specialty: string | null;
+  contact_name: string | null;
+  phone: string | null;
+  email: string | null;
+  address: string | null;
+  notes: string | null;
+  is_active: boolean;
+  created_by: number | null;
+}
+
+export interface ProviderCreate {
+  name: string;
+  type: string;
+  specialty?: string;
+  contact_name?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  notes?: string;
+}
+
+export interface ProviderUpdate {
+  name?: string;
+  type?: string;
+  specialty?: string;
+  contact_name?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  notes?: string;
+  is_active?: boolean;
+}
+
+export interface Contract {
+  id: number;
+  provider_id: number;
+  contract_name: string;
+  description: string | null;
+  start_date: string;
+  end_date: string | null;
+  value: string | null;
+  status: string;
+  renewal_notice_days: number;
+  is_active: boolean;
+  created_by: number | null;
+}
+
+export interface ContractCreate {
+  provider_id: number;
+  contract_name: string;
+  description?: string;
+  start_date: string;
+  end_date?: string;
+  value?: string;
+  status?: string;
+  renewal_notice_days?: number;
+}
+
+export interface ContractUpdate {
+  contract_name?: string;
+  description?: string;
+  start_date?: string;
+  end_date?: string;
+  value?: string;
+  status?: string;
+  renewal_notice_days?: number;
+  is_active?: boolean;
+}
+
+export interface MaintenanceAlert {
+  id: number;
+  uuid: string;
+  asset_id: number;
+  provider_id: number | null;
+  alert_type: string;
+  description: string;
+  scheduled_date: string;
+  status: string;
+  notified_at: string | null;
+  completed_at: string | null;
+  notified_to: number | null;
+  notes: string | null;
+  is_active: boolean;
+}
+
+export interface AlertCreate {
+  asset_id: number;
+  alert_type: string;
+  description: string;
+  scheduled_date: string;
+  provider_id?: number;
+  notes?: string;
+}
+
+export interface AlertUpdate {
+  status?: string;
+  description?: string;
+  scheduled_date?: string;
+  notes?: string;
+}
+
+export interface AlertSummary {
+  asset_id: number;
+  asset_unit_number: string;
+  asset_type: string;
+  pending_count: number;
+  overdue_count: number;
+  upcoming_count: number;
+}
+
+export interface AlertDashboardSummary {
+  alerts: MaintenanceAlert[];
+  summary: AlertSummary[];
+  total_pending: number;
+  total_overdue: number;
+  total_completed: number;
+}

@@ -505,3 +505,67 @@ CREATE TABLE IF NOT EXISTS task_followups (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- =============================================
+-- Modulo D: Directorio de Proveedores (Fase 15)
+-- =============================================
+
+-- Enum para tipo de provider
+CREATE TYPE IF NOT EXISTS provider_type AS ENUM ('empresa', 'independiente');
+CREATE TYPE IF NOT EXISTS contract_status AS ENUM ('active', 'expired', 'terminated', 'pending');
+CREATE TYPE IF NOT EXISTS alert_type AS ENUM ('maintenance', 'contract_expiry', 'warranty_expiry');
+CREATE TYPE IF NOT EXISTS alert_status AS ENUM ('pending', 'notified', 'completed', 'dismissed');
+
+-- Proveedores / técnicos
+CREATE TABLE IF NOT EXISTS providers (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    type provider_type NOT NULL,
+    specialty VARCHAR(100),
+    contact_name VARCHAR(255),
+    phone VARCHAR(50),
+    email VARCHAR(255),
+    address TEXT,
+    notes TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_by INTEGER REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Contratos con proveedores
+CREATE TABLE IF NOT EXISTS provider_contracts (
+    id SERIAL PRIMARY KEY,
+    provider_id INTEGER NOT NULL REFERENCES providers(id),
+    contract_name VARCHAR(255) NOT NULL,
+    description TEXT,
+    start_date DATE NOT NULL,
+    end_date DATE,
+    value NUMERIC(12,2),
+    status contract_status DEFAULT 'active',
+    renewal_notice_days INTEGER DEFAULT 30,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_by INTEGER REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Alertas de mantenimiento y vencimiento
+CREATE TABLE IF NOT EXISTS maintenance_alerts (
+    id SERIAL PRIMARY KEY,
+    uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+    asset_id INTEGER NOT NULL REFERENCES assets(id),
+    provider_id INTEGER REFERENCES providers(id),
+    alert_type alert_type NOT NULL,
+    description TEXT NOT NULL,
+    scheduled_date DATE NOT NULL,
+    status alert_status DEFAULT 'pending',
+    notified_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    notified_to INTEGER REFERENCES users(id),
+    notes TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);

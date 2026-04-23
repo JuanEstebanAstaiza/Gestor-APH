@@ -51,3 +51,28 @@ export const ASSET_TYPE_LABELS: Record<string, string> = {
   storage: "Depósito",
   commercial: "Comercial",
 };
+
+export const PROVIDER_TYPE_LABELS: Record<string, string> = {
+  empresa: "Empresa",
+  independiente: "Independiente",
+};
+
+export const CONTRACT_STATUS_LABELS: Record<string, string> = {
+  active: "Activo",
+  expired: "Vencido",
+  terminated: "Terminado",
+  pending: "Pendiente",
+};
+
+export const ALERT_TYPE_LABELS: Record<string, string> = {
+  maintenance: "Mantenimiento",
+  contract_expiry: "Vencimiento contrato",
+  warranty_expiry: "Vencimiento garantía",
+};
+
+export const ALERT_STATUS_LABELS: Record<string, string> = {
+  pending: "Pendiente",
+  notified: "Notificado",
+  completed: "Completado",
+  dismissed: "Descartado",
+};

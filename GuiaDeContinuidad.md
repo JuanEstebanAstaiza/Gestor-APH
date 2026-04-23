@@ -9,7 +9,7 @@
 | 12 | Modulo C — Atencion y Comunicacion | COMPLETADA | [PHASE_12_MODULO_C_ATENCION.md](Documentacion/fases/PHASE_12_MODULO_C_ATENCION.md) |
 | 13 | Modulo G — Reservas y Convivencia | COMPLETADA | [PHASE_13_MODULO_G_RESERVAS.md](Documentacion/fases/PHASE_13_MODULO_G_RESERVAS.md) |
 | 14 | Modulo F — Asambleas y Consejo | COMPLETADA | [PHASE_14_MODULO_F_ASAMBLEAS.md](Documentacion/fases/PHASE_14_MODULO_F_ASAMBLEAS.md) |
-| 15 | Modulo D — Directorio de Proveedores | PENDIENTE | [PHASE_15_MODULO_D_PROVEEDORES.md](Documentacion/fases/PHASE_15_MODULO_D_PROVEEDORES.md) |
+| 15 | Modulo D — Directorio de Proveedores | COMPLETADA | [PHASE_15_MODULO_D_PROVEEDORES.md](Documentacion/fases/PHASE_15_MODULO_D_PROVEEDORES.md) |
 | 16 | UI/UX refinement | PENDIENTE | [PHASE_16_UI_UX.md](Documentacion/fases/PHASE_16_UI_UX.md) |
 | 17 | Testing | PENDIENTE | [PHASE_17_TESTING.md](Documentacion/fases/PHASE_17_TESTING.md) |
 | 18 | Docker production | PENDIENTE | [PHASE_18_DOCKER_PRODUCTION.md](Documentacion/fases/PHASE_18_DOCKER_PRODUCTION.md) |
@@ -66,3 +66,31 @@
 - Votacion: opciones fijas (favor/en_contra/abstencion), solo residentes con asistencia confirmada
 - Actas: versioning automatico al actualizar
 - RBAC: consejo(3)+ crea/gestiona asambleas y tareas; admin(4)+ todo
+
+## Resumen Fase 15 — Modulo D
+
+### Deliverables backend
+- `init_schema.sql` — Tablas: `providers`, `provider_contracts`, `maintenance_alerts` + enums (provider_type, contract_status, alert_type, alert_status)
+- `models/provider.py` — SQLAlchemy models: Provider, ProviderContract, MaintenanceAlert
+- `schemas/provider.py` — Pydantic schemas: ProviderCreate/Update/Out, ContractCreate/Update/Out, AlertCreate/Update/Out, AlertSummary, AlertDashboardSummary, PaginatedAlertsResponse
+- `services/provider_service.py` — CRUD providers + contracts (create, list, get, update, deactivate)
+- `services/alert_service.py` — CRUD alerts + dashboard summary + contract expiry alert generation
+- `routers/providers.py` — CRUD providers + contracts endpoints
+- `routers/maintenance.py` — CRUD alerts + dashboard + notify/complete/dismiss endpoints
+
+### Deliverables frontend
+- `types/index.ts` — Provider, Contract, MaintenanceAlert, AlertSummary interfaces
+- `lib/constants.ts` — PROVIDER_TYPE_LABELS, CONTRACT_STATUS_LABELS, ALERT_TYPE_LABELS, ALERT_STATUS_LABELS
+- `pages/providers/ProviderList.tsx` — Listado de proveedores
+- `pages/providers/ProviderForm.tsx` — Formulario de crear/editar proveedor
+- `pages/providers/ContractView.tsx` — Listado de contratos por proveedor
+- `pages/maintenance/AlertDashboard.tsx` — Dashboard con resumen cards + alertas pendientes/vencidas + acciones
+- `pages/maintenance/AlertForm.tsx` — Formulario de nueva alerta
+- `pages/maintenance/MaintenanceCalendar.tsx` — Calendario visual de alertas agrupado por mes
+
+### Decisiones clave
+- Provider specialty: free text, no enum para flexibilidad
+- renewal_notice_days: configurable por contrato (default 30) para alertas anticipadas
+- Alert type enum: maintenance/contract_expiry/warranty_expiry
+- Contracts no tienen asset_id directo (se vinculan solo al provider)
+- RBAC: consejo(3)+ CRUD providers/alerts; admin(4)+ generate contract alerts
