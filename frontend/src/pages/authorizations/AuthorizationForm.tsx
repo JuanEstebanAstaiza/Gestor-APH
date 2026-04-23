@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api";
+import Select from "../../components/common/Select";
+import Textarea from "../../components/common/Textarea";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
 
 export default function AuthorizationForm() {
   const [targetType, setTargetType] = useState("pet");
@@ -31,40 +35,38 @@ export default function AuthorizationForm() {
     mutation.mutate();
   };
 
+  const options = [
+    { value: "pet", label: "Mascota" },
+    { value: "renovation", label: "Renovación" },
+    { value: "noise_exception", label: "Excepción de ruido" },
+    { value: "parking", label: "Parqueadero especial" },
+    { value: "other", label: "Otro" },
+  ];
+
   return (
     <div style={{ maxWidth: 480 }}>
       <h1 style={{ fontSize: 24, marginBottom: 24 }}>Nueva solicitud</h1>
-      {error && <div style={{ background: "var(--color-danger-light)", color: "var(--color-danger)", padding: 8, borderRadius: 8, marginBottom: 16 }}>{error}</div>}
+      {error && <div className="form-error">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Tipo</label>
-          <select value={targetType} onChange={(e) => setTargetType(e.target.value)}
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }}>
-            <option value="pet">Mascota</option>
-            <option value="renovation">Renovación</option>
-            <option value="noise_exception">Excepción de ruido</option>
-            <option value="parking">Parqueadero especial</option>
-            <option value="other">Otro</option>
-          </select>
+        <div className="form-group">
+          <label className="form-label">Tipo</label>
+          <Select value={targetType} onChange={setTargetType} options={options} />
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Descripción</label>
-          <textarea value={targetDesc} onChange={(e) => setTargetDesc(e.target.value)} required rows={3}
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Descripción</label>
+          <Textarea value={targetDesc} onChange={setTargetDesc} required />
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Fecha de vencimiento (opcional)</label>
-          <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)}
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Fecha de vencimiento (opcional)</label>
+          <Input type="date" value={expiryDate} onChange={setExpiryDate} />
         </div>
-        <div style={{ marginBottom: 24 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Notas</label>
-          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Notas</label>
+          <Textarea value={notes} onChange={setNotes} />
         </div>
-        <button type="submit" style={{ padding: "10px 24px", background: "var(--color-primary)", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer" }}>
+        <Button type="submit" variant="primary">
           Enviar solicitud
-        </button>
+        </Button>
       </form>
     </div>
   );

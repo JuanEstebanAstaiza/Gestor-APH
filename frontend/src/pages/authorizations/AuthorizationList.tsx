@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import DataTable from "../../components/common/DataTable";
+import Button from "../../components/common/Button";
 
 export default function AuthorizationList() {
   const { data } = useQuery({
@@ -18,10 +19,12 @@ export default function AuthorizationList() {
   return (
     <div>
       <h1 style={{ fontSize: 24, marginBottom: 16 }}>Autorizaciones</h1>
-      <a href="/authorizations/new" style={{ display: "inline-block", padding: "8px 16px", background: "var(--color-primary)", color: "#fff", borderRadius: 8, textDecoration: "none", marginBottom: 16, fontSize: 14 }}>
+      <Button href="/authorizations/new" variant="primary">
         + Nueva solicitud
-      </a>
-      {data?.data && <DataTable columns={columns} data={data.data} />}
+      </Button>
+      <div style={{ marginTop: 16 }}>
+        {data?.data && <DataTable columns={columns} data={data.data} />}
+      </div>
     </div>
   );
 }

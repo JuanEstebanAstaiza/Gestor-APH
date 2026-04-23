@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import DataTable from "../../components/common/DataTable";
+import Button from "../../components/common/Button";
 import { PROPERTY_TYPE_LABELS } from "../../lib/constants";
 
 export default function ResidentList() {
@@ -20,18 +21,21 @@ export default function ResidentList() {
   return (
     <div>
       <h1 style={{ fontSize: 24, marginBottom: 16 }}>Censo</h1>
-      <a href="/census/residents/new" style={{ display: "inline-block", padding: "8px 16px", background: "var(--color-primary)", color: "#fff", borderRadius: 8, textDecoration: "none", marginBottom: 16, fontSize: 14 }}>
+      <Button href="/census/residents/new" variant="primary">
         + Nuevo residente
-      </a>
-      {data?.data && (
-        <DataTable
-          columns={columns}
-          data={data.data.map((r: Record<string, unknown>) => ({
-            ...r,
-            property_type: typeLabels[r.property_type as string] || r.property_type,
-          }))}
-        />
-      )}
+      </Button>
+      <div style={{ marginTop: 16 }}>
+        {data?.data && (
+          <DataTable
+            columns={columns}
+            data={data.data.map((r: Record<string, unknown>) => ({
+              ...r,
+              property_type: typeLabels[r.property_type as string] || r.property_type,
+              is_active: r.is_active ? "Si" : "No",
+            }))}
+          />
+        )}
+      </div>
     </div>
   );
 }

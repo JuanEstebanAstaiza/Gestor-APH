@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import DataTable from "../../components/common/DataTable";
+import Button from "../../components/common/Button";
 
 export default function VisitorList() {
   const { data } = useQuery({
@@ -19,10 +20,12 @@ export default function VisitorList() {
   return (
     <div>
       <h1 style={{ fontSize: 24, marginBottom: 16 }}>Visitantes</h1>
-      <a href="/visitors/new" style={{ display: "inline-block", padding: "8px 16px", background: "var(--color-primary)", color: "#fff", borderRadius: 8, textDecoration: "none", marginBottom: 16, fontSize: 14 }}>
+      <Button href="/visitors/new" variant="primary">
         + Nuevo visitante
-      </a>
-      {data?.data && <DataTable columns={columns} data={data.data} />}
+      </Button>
+      <div style={{ marginTop: 16 }}>
+        {data?.data && <DataTable columns={columns} data={data.data} />}
+      </div>
     </div>
   );
 }

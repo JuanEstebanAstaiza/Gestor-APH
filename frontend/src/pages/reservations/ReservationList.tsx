@@ -3,6 +3,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth";
 import { type Reservation } from "../../types";
+import Select from "../../components/common/Select";
+import DataTable from "../../components/common/DataTable";
+import Modal from "../../components/common/Modal";
+import Textarea from "../../components/common/Textarea";
+import Button from "../../components/common/Button";
 
 const API_BASE = "/api/reservations";
 
@@ -21,6 +26,24 @@ const statusLabels: Record<string, string> = {
   cancelled: "Cancelada",
   completed: "Completada",
 };
+
+const STATUS_OPTIONS = [
+  { value: "", label: "Todos los estados" },
+  { value: "pending", label: "Pendiente" },
+  { value: "approved", label: "Aprobada" },
+  { value: "rejected", label: "Rechazada" },
+  { value: "cancelled", label: "Cancelada" },
+  { value: "completed", label: "Completada" },
+];
+
+const ASSET_OPTIONS = [
+  { value: "", label: "Todas las areas" },
+  { value: "bbq", label: "Parrilla" },
+  { value: "salon", label: "Salon" },
+  { value: "cancha", label: "Cancha" },
+  { value: "piscina", label: "Piscina" },
+  { value: "otros", label: "Otros" },
+];
 
 export default function ReservationList() {
   const { user } = useAuth();
@@ -57,214 +80,77 @@ export default function ReservationList() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["reservations"] }),
   });
 
+  const isConsejo = user && parseInt(user.role) >= 3;
+
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h1 style={{ fontSize: 24 }}>Listado de Reservas</h1>
       </div>
-
       <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        >
-          <option value="">Todos los estados</option>
-          <option value="pending">Pendiente</option>
-          <option value="approved">Aprobada</option>
-          <option value="rejected">Rechazada</option>
-          <option value="cancelled">Cancelada</option>
-          <option value="completed">Completada</option>
-        </select>
-        <select
-          value={assetId}
-          onChange={(e) => setAssetId(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        >
-          <option value="">Todas las areas</option>
-          <option value="bbq">Parrilla</option>
-          <option value="salon">Salon</option>
-          <option value="cancha">Cancha</option>
-          <option value="piscina">Piscina</option>
-          <option value="otros">Otros</option>
-        </select>
+        <Select value={statusFilter} onChange={setStatusFilter} options={STATUS_OPTIONS} style={{ width: 160 }} />
+        <Select value={assetId} onChange={setAssetId} options={ASSET_OPTIONS} style={{ width: 160 }} />
       </div>
-
       {isLoading ? (
-        <p>Cargando...</p>
+        <p className="loading">Cargando...</p>
       ) : (
-        <div style={{
-          background: "var(--color-bg)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius)",
-          overflow: "hidden",
-        }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ background: "var(--color-bg-subtle)" }}>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Area</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Desde</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Hasta</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Invitados</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Estado</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reservations?.map((r) => (
-                <tr key={r.id} style={{ borderBottom: "1px solid var(--color-border)" }}>
-                  <td style={{ padding: 12 }}>{r.area_name}</td>
-                  <td style={{ padding: 12 }}>{r.start_datetime}</td>
-                  <td style={{ padding: 12 }}>{r.end_datetime}</td>
-                  <td style={{ padding: 12 }}>{r.guests_count}</td>
-                  <td style={{ padding: 12 }}>
-                    <span style={{
-                      display: "inline-block",
-                      padding: "2px 8px",
-                      borderRadius: 4,
-                      background: statusColors[r.status] || "#6b7280",
-                      color: "white",
-                      fontSize: 12,
-                      fontWeight: 600,
-                    }}>
-                      {statusLabels[r.status] || r.status}
-                    </span>
-                  </td>
-                  <td style={{ padding: 12 }}>
-                    <div style={{ display: "flex", gap: 4 }}>
-                      {r.status === "pending" && parseInt(user?.role || "0") >= 3 && (
-                        <>
-                          <button
-                            onClick={() => approveMutation.mutate(r.id)}
-                            disabled={approveMutation.isPending}
-                            style={{
-                              background: "#22c55e",
-                              color: "white",
-                              border: "none",
-                              borderRadius: "var(--radius)",
-                              padding: "4px 8px",
-                              cursor: "pointer",
-                              fontSize: 12,
-                            }}
-                          >
-                            Aprobar
-                          </button>
-                          <button
-                            onClick={() => setShowReject(r.id)}
-                            style={{
-                              background: "#ef4444",
-                              color: "white",
-                              border: "none",
-                              borderRadius: "var(--radius)",
-                              padding: "4px 8px",
-                              cursor: "pointer",
-                              fontSize: 12,
-                            }}
-                          >
-                            Rechazar
-                          </button>
-                        </>
-                      )}
-                      {(r.status === "pending" || r.status === "approved") && (
-                        <button
-                          onClick={() => cancelMutation.mutate(r.id)}
-                          disabled={cancelMutation.isPending}
-                          style={{
-                            background: "#6b7280",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "var(--radius)",
-                            padding: "4px 8px",
-                            cursor: "pointer",
-                            fontSize: 12,
-                          }}
-                        >
-                          Cancelar
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {!reservations?.length && <tr><td colSpan={6} style={{ padding: 24, textAlign: "center", color: "var(--color-text-muted)" }}>No hay reservas</td></tr>}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={[
+            { key: "area_name", label: "Area" },
+            { key: "start_datetime", label: "Desde" },
+            { key: "end_datetime", label: "Hasta" },
+            { key: "guests_count", label: "Invitados" },
+            { key: "status", label: "Estado" },
+            { key: "actions", label: "Acciones" },
+          ]}
+          data={reservations?.map((r) => ({
+            ...r,
+            area_name: r.area_name,
+            status: (
+              <span style={{ display: "inline-block", padding: "2px 8px", borderRadius: 4, background: statusColors[r.status] || "#6b7280", color: "white", fontSize: 12, fontWeight: 600 }}>
+                {statusLabels[r.status] || r.status}
+              </span>
+            ),
+            actions: (
+              <div style={{ display: "flex", gap: 4 }}>
+                {r.status === "pending" && isConsejo && (
+                  <>
+                    <Button variant="ghost" size="sm" style={{ background: "#22c55e", color: "white", border: "none" }} disabled={approveMutation.isPending} onClick={() => approveMutation.mutate(r.id)}>
+                      Aprobar
+                    </Button>
+                    <Button variant="ghost" size="sm" style={{ background: "#ef4444", color: "white", border: "none" }} onClick={() => setShowReject(r.id)}>
+                      Rechazar
+                    </Button>
+                  </>
+                )}
+                {(r.status === "pending" || r.status === "approved") && (
+                  <Button variant="ghost" size="sm" style={{ background: "#6b7280", color: "white", border: "none" }} disabled={cancelMutation.isPending} onClick={() => cancelMutation.mutate(r.id)}>
+                    Cancelar
+                  </Button>
+                )}
+              </div>
+            ),
+          })) || []}
+          emptyMessage="No hay reservas"
+        />
       )}
-
-      {showReject && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0,0,0,0.5)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-        }}>
-          <div style={{
-            background: "var(--color-bg)",
-            border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius)",
-            padding: 20,
-            width: 400,
-          }}>
+      {showReject !== null && (
+        <Modal onClose={() => { setShowReject(null); setRejectReason(""); }}>
+          <Modal.Header>
             <h3 style={{ marginTop: 0 }}>Rechazar Reserva</h3>
-            <textarea
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              placeholder="Motivo del rechazo"
-              rows={4}
-              style={{
-                width: "100%",
-                padding: 8,
-                border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius)",
-                marginBottom: 12,
-                boxSizing: "border-box",
-              }}
-            />
-            <div style={{ display: "flex", gap: 8 }}>
-              <button
-                onClick={() => {
-                  rejectMutation.mutate({ id: showReject, reason: rejectReason || "Sin motivo" });
-                  setShowReject(null);
-                  setRejectReason("");
-                }}
-                disabled={rejectMutation.isPending}
-                style={{
-                  background: "#ef4444",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "var(--radius)",
-                  padding: "8px 16px",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                }}
-              >
-                {rejectMutation.isPending ? "Rechazando..." : "Confirmar Rechazo"}
-              </button>
-              <button
-                onClick={() => {
-                  setShowReject(null);
-                  setRejectReason("");
-                }}
-                style={{
-                  background: "transparent",
-                  border: "1px solid var(--color-border)",
-                  borderRadius: "var(--radius)",
-                  padding: "8px 16px",
-                  cursor: "pointer",
-                }}
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
+          </Modal.Header>
+          <Modal.Body>
+            <Textarea value={rejectReason} onChange={(v) => setRejectReason(v)} placeholder="Motivo del rechazo" rows={4} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="danger" disabled={rejectMutation.isPending} onClick={() => { rejectMutation.mutate({ id: showReject, reason: rejectReason || "Sin motivo" }); setShowReject(null); setRejectReason(""); }}>
+              {rejectMutation.isPending ? "Rechazando..." : "Confirmar Rechazo"}
+            </Button>
+            <Button variant="secondary" onClick={() => { setShowReject(null); setRejectReason(""); }}>
+              Cancelar
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
     </div>
   );

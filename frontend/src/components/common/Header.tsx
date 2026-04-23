@@ -1,4 +1,5 @@
 import { useAuth } from "../../hooks/useAuth";
+import Button from "./Button";
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -8,27 +9,22 @@ export default function Header() {
       style={{
         background: "var(--color-bg)",
         borderBottom: "1px solid var(--color-border)",
-        padding: "12px 24px",
+        padding: "var(--space-3) var(--space-6)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
       }}
     >
-      <div style={{ fontWeight: 600 }}>{user?.full_name}</div>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <span style={{ fontSize: 13, color: "var(--color-text-muted)" }}>{user?.email}</span>
-        <button
-          onClick={logout}
-          style={{
-            padding: "6px 12px",
-            border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius)",
-            background: "transparent",
-            cursor: "pointer",
-          }}
-        >
-          Cerrar sesión
-        </button>
+      <div style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)" }}>
+        {user?.full_name}
+      </div>
+      <div style={{ display: "flex", gap: "var(--space-3)", alignItems: "center" }}>
+        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+          {user?.email}
+        </span>
+        <Button variant="secondary" size="sm" onClick={logout}>
+          Cerrar sesion
+        </Button>
       </div>
     </header>
   );

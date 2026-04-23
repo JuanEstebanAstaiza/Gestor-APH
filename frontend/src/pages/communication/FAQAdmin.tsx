@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { type FAQEntry, type FAQCreate } from "../../types";
+import Input from "../../components/common/Input";
+import Textarea from "../../components/common/Textarea";
+import Button from "../../components/common/Button";
 
 const API_BASE = "/api/faq";
 
@@ -25,7 +28,7 @@ export default function FAQAdmin() {
       const params = new URLSearchParams();
       params.set("q", searchQuery);
       const { data } = await axios.get(`${API_BASE}/search`, { params });
-      return data as FAQSearchResponse;
+      return data as { data: FAQEntry[] };
     },
     enabled: !!searchQuery,
   });
@@ -38,96 +41,36 @@ export default function FAQAdmin() {
     },
   });
 
+  const displayItems = (searchQuery && searchResults?.data) || (!searchQuery && faqList);
+
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h1 style={{ fontSize: 24 }}>Admin FAQ</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          style={{
-            background: "var(--color-primary)",
-            color: "white",
-            border: "none",
-            borderRadius: "var(--radius)",
-            padding: "8px 16px",
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-        >
+        <Button variant="primary" onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancelar" : "Nueva FAQ"}
-        </button>
+        </Button>
       </div>
-
       {showForm && (
-        <div style={{
-          background: "var(--color-bg)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius)",
-          padding: 20,
-          marginBottom: 24,
-          maxWidth: 600,
-        }}>
+        <div className="card" style={{ marginBottom: 24, maxWidth: 600 }}>
           <h3 style={{ marginTop: 0 }}>Nueva FAQ</h3>
           <div style={{ display: "grid", gap: 12 }}>
-            <input
-              type="text"
-              placeholder="Pregunta"
-              value={form.question}
-              onChange={(e) => setForm({ ...form, question: e.target.value })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <textarea
-              placeholder="Respuesta"
-              value={form.answer}
-              onChange={(e) => setForm({ ...form, answer: e.target.value })}
-              rows={4}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <input
-              type="text"
-              placeholder="Categoria (separada por comas)"
-              value={form.category || ""}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <button
-              onClick={() => createMutation.mutate(form)}
-              disabled={createMutation.isPending || !form.question || !form.answer}
-              style={{
-                background: "var(--color-primary)",
-                color: "white",
-                border: "none",
-                borderRadius: "var(--radius)",
-                padding: "8px 16px",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
+            <Input type="text" placeholder="Pregunta" value={form.question} onChange={(v) => setForm({ ...form, question: v })} />
+            <Textarea placeholder="Respuesta" value={form.answer} onChange={(v) => setForm({ ...form, answer: v })} rows={4} />
+            <Input type="text" placeholder="Categoria (separada por comas)" value={form.category || ""} onChange={(v) => setForm({ ...form, category: v })} />
+            <Button variant="primary" disabled={createMutation.isPending || !form.question || !form.answer} onClick={() => createMutation.mutate(form)}>
               {createMutation.isPending ? "Guardando..." : "Guardar"}
-            </button>
+            </Button>
           </div>
         </div>
       )}
-
       <div style={{ marginBottom: 16 }}>
-        <input
-          type="text"
-          placeholder="Buscar FAQ..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)", width: 400 }}
-        />
+        <Input type="text" placeholder="Buscar FAQ..." value={searchQuery} onChange={setSearchQuery} style={{ width: 400 }} />
       </div>
-
       <div style={{ display: "grid", gap: 12 }}>
-        {(searchQuery && searchResults?.data) || (!searchQuery && faqList) ? (
-          (searchQuery && searchResults?.data || faqList)?.map((item) => (
-            <div key={item.id} style={{
-              background: "var(--color-bg)",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius)",
-              padding: 16,
-            }}>
+        {displayItems ? (
+          displayItems.map((item) => (
+            <div key={item.id} className="card">
               <div style={{ fontWeight: 600, marginBottom: 4 }}>{item.question}</div>
               <div style={{ color: "var(--color-text-muted)" }}>{item.answer}</div>
               {item.category && <span style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 8, display: "inline-block" }}>{item.category}</span>}

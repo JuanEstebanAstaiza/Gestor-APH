@@ -20,16 +20,7 @@ export default function Dashboard() {
       </p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
         {summaryCards.map((card) => (
-          <div
-            key={card.title}
-            style={{
-              background: "var(--color-bg)",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius)",
-              padding: 20,
-              boxShadow: "var(--shadow)",
-            }}
-          >
+          <div key={card.title} className="card">
             <div style={{ fontSize: 28, marginBottom: 8 }}>{card.icon}</div>
             <div style={{ fontSize: 24, fontWeight: 700 }}>{card.count}</div>
             <div style={{ fontSize: 13, color: "var(--color-text-muted)" }}>{card.title}</div>

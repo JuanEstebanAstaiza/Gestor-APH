@@ -4,6 +4,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth";
 import { type Agenda, type AgendaCreate } from "../../types";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
+import DataTable from "../../components/common/DataTable";
 
 const API_BASE = "/api/assemblies";
 
@@ -44,129 +47,47 @@ export default function AgendaBuilder() {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h1 style={{ fontSize: 24 }}>Agenda de la Asamblea</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          style={{
-            background: "var(--color-primary)",
-            color: "white",
-            border: "none",
-            borderRadius: "var(--radius)",
-            padding: "8px 16px",
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-        >
+        <Button variant="primary" onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancelar" : "Agregar Tema"}
-        </button>
+        </Button>
       </div>
-
       {showForm && (
-        <div style={{
-          background: "var(--color-bg)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius)",
-          padding: 20,
-          marginBottom: 24,
-        }}>
+        <div className="card" style={{ marginBottom: 24 }}>
           <h3 style={{ marginTop: 0 }}>Nuevo Tema</h3>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
-            <input
-              type="text"
-              placeholder="Tema"
-              value={form.topic}
-              onChange={(e) => setForm({ ...form, topic: e.target.value })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <input
-              type="number"
-              placeholder="Orden"
-              value={form.order}
-              onChange={(e) => setForm({ ...form, order: parseInt(e.target.value) || 1 })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <input
-              type="number"
-              placeholder="Duracion (min)"
-              value={form.duration_minutes || ""}
-              onChange={(e) => setForm({ ...form, duration_minutes: parseInt(e.target.value) || 0 })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <input
-              type="number"
-              placeholder="Presentador ID"
-              value={form.presenter_id || ""}
-              onChange={(e) => setForm({ ...form, presenter_id: parseInt(e.target.value) || 0 })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <button
-              onClick={() => createMutation.mutate(form)}
-              disabled={createMutation.isPending || !form.topic}
-              style={{
-                background: "var(--color-primary)",
-                color: "white",
-                border: "none",
-                borderRadius: "var(--radius)",
-                padding: "8px 16px",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
+            <Input type="text" placeholder="Tema" value={form.topic} onChange={(v) => setForm({ ...form, topic: v })} />
+            <Input type="number" placeholder="Orden" value={String(form.order)} onChange={(v) => setForm({ ...form, order: parseInt(v) || 1 })} />
+            <Input type="number" placeholder="Duracion (min)" value={form.duration_minutes || ""} onChange={(v) => setForm({ ...form, duration_minutes: parseInt(v) || 0 })} />
+            <Input type="number" placeholder="Presentador ID" value={form.presenter_id || ""} onChange={(v) => setForm({ ...form, presenter_id: parseInt(v) || 0 })} />
+            <Button variant="primary" disabled={createMutation.isPending || !form.topic} onClick={() => createMutation.mutate(form)}>
               {createMutation.isPending ? "Agregando..." : "Agregar"}
-            </button>
+            </Button>
           </div>
         </div>
       )}
-
       {isLoading ? (
-        <p>Cargando...</p>
+        <p className="loading">Cargando...</p>
       ) : (
-        <div style={{
-          background: "var(--color-bg)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius)",
-          overflow: "hidden",
-        }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ background: "var(--color-bg-subtle)" }}>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Orden</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Tema</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Descripcion</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Presentador</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Duracion</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {agendas?.map((a, idx) => (
-                <tr key={a.id} style={{ borderBottom: "1px solid var(--color-border)" }}>
-                  <td style={{ padding: 12, fontWeight: 600 }}>{a.order}</td>
-                  <td style={{ padding: 12, fontWeight: 600 }}>{a.topic}</td>
-                  <td style={{ padding: 12 }}>{a.description || "--"}</td>
-                  <td style={{ padding: 12 }}>{a.presenter_id || "--"}</td>
-                  <td style={{ padding: 12 }}>{a.duration_minutes ? `${a.duration_minutes} min` : "--"}</td>
-                  <td style={{ padding: 12 }}>
-                    <button
-                      onClick={() => deleteMutation.mutate(a.id)}
-                      style={{
-                        background: "#ef4444",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "var(--radius)",
-                        padding: "4px 8px",
-                        cursor: "pointer",
-                        fontSize: 12,
-                      }}
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {!agendas?.length && <tr><td colSpan={6} style={{ padding: 24, textAlign: "center", color: "var(--color-text-muted)" }}>No hay temas en la agenda</td></tr>}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={[
+            { key: "order", label: "Orden" },
+            { key: "topic", label: "Tema" },
+            { key: "description", label: "Descripcion" },
+            { key: "presenter_id", label: "Presentador" },
+            { key: "duration_minutes", label: "Duracion" },
+            { key: "actions", label: "Acciones" },
+          ]}
+          data={agendas?.map((a) => ({
+            ...a,
+            duration_minutes: a.duration_minutes ? `${a.duration_minutes} min` : "--",
+            actions: (
+              <Button variant="danger" size="sm" onClick={() => deleteMutation.mutate(a.id)}>
+                Eliminar
+              </Button>
+            ),
+          })) || []}
+          emptyMessage="No hay temas en la agenda"
+        />
       )}
     </div>
   );

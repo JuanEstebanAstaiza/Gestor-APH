@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { type Balance } from "../../types";
+import Input from "../../components/common/Input";
 
 const API_BASE = "/api/finance";
 
@@ -26,47 +27,20 @@ export default function BalanceView() {
   return (
     <div>
       <h1 style={{ fontSize: 24, marginBottom: 24 }}>Consulta de Balance</h1>
-
-      <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
-        <input
-          type="number"
-          placeholder="Resident ID"
-          value={residentId}
-          onChange={(e) => setResidentId(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        />
-        <input
-          type="month"
-          placeholder="Period (opcional)"
-          value={period}
-          onChange={(e) => setPeriod(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        />
+      <div style={{ display: "flex", gap: "var(--space-3)", marginBottom: 24 }}>
+        <Input type="number" placeholder="Resident ID" value={residentId} onChange={setResidentId} style={{ width: 200 }} />
+        <Input type="month" placeholder="Period (opcional)" value={period} onChange={setPeriod} style={{ width: 160 }} />
       </div>
-
       {isLoading ? (
-        <p>Cargando...</p>
+        <p className="loading">Cargando...</p>
       ) : balance ? (
-        <div style={{
-          background: "var(--color-bg)",
-          border: `2px solid ${isCurrent ? "var(--color-success)" : "var(--color-error)"}`,
-          borderRadius: "var(--radius)",
-          padding: 24,
-        }}>
+        <div className="card" style={{ border: `2px solid ${isCurrent ? "var(--color-success)" : "var(--color-error)"}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-            <span style={{
-              fontSize: 20,
-              fontWeight: 700,
-              padding: "4px 12px",
-              borderRadius: 4,
-              background: isCurrent ? "var(--color-success)" : "var(--color-error)",
-              color: "white",
-            }}>
+            <span style={{ fontSize: 20, fontWeight: 700, padding: "4px 12px", borderRadius: 4, background: isCurrent ? "var(--color-success)" : "var(--color-error)", color: "white" }}>
               {isCurrent ? "Al Dia" : "Con Mora"}
             </span>
             <span style={{ color: "var(--color-text-muted)" }}>Resident #{balance.resident_id}</span>
           </div>
-
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 16 }}>
             <div style={{ padding: 16, background: "var(--color-bg-subtle)", borderRadius: "var(--radius)" }}>
               <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 4 }}>Total Adeudado</div>

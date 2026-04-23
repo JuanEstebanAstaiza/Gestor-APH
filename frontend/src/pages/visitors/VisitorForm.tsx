@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api";
+import Input from "../../components/common/Input";
+import Textarea from "../../components/common/Textarea";
+import Button from "../../components/common/Button";
 
 export default function VisitorForm() {
   const [firstName, setFirstName] = useState("");
@@ -30,36 +33,31 @@ export default function VisitorForm() {
   return (
     <div style={{ maxWidth: 480 }}>
       <h1 style={{ fontSize: 24, marginBottom: 24 }}>Nuevo visitante</h1>
-      {error && <div style={{ background: "var(--color-danger-light)", color: "var(--color-danger)", padding: 8, borderRadius: 8, marginBottom: 16 }}>{error}</div>}
+      {error && <div className="form-error">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Nombre</label>
-          <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Nombre</label>
+          <Input value={firstName} onChange={setFirstName} required />
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Apellido</label>
-          <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Apellido</label>
+          <Input value={lastName} onChange={setLastName} required />
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Documento</label>
-          <input type="text" value={idDocument} onChange={(e) => setIdDocument(e.target.value)} required
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Documento</label>
+          <Input value={idDocument} onChange={setIdDocument} required />
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Placa (opcional)</label>
-          <input type="text" value={vehiclePlate} onChange={(e) => setVehiclePlate(e.target.value)}
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Placa (opcional)</label>
+          <Input value={vehiclePlate} onChange={setVehiclePlate} />
         </div>
-        <div style={{ marginBottom: 24 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Notas</label>
-          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Notas</label>
+          <Textarea value={notes} onChange={setNotes} />
         </div>
-        <button type="submit" style={{ padding: "10px 24px", background: "var(--color-primary)", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer" }}>
+        <Button type="submit" variant="primary">
           Crear
-        </button>
+        </Button>
       </form>
     </div>
   );

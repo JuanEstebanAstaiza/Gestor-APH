@@ -4,6 +4,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth";
 import { type Minute, type MinuteCreate } from "../../types";
+import Input from "../../components/common/Input";
+import Textarea from "../../components/common/Textarea";
+import Button from "../../components/common/Button";
 
 const API_BASE = "/api/assemblies";
 
@@ -33,7 +36,9 @@ export default function MinutesView() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["minutes", assemblyId] }),
   });
 
-  if (!user || parseInt(user.role) < 3) {
+  const isConsejo = user && parseInt(user.role) >= 3;
+
+  if (!isConsejo) {
     return (
       <div>
         <h1 style={{ fontSize: 24 }}>Actas</h1>
@@ -46,85 +51,31 @@ export default function MinutesView() {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h1 style={{ fontSize: 24 }}>Actas de la Asamblea</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          style={{
-            background: "var(--color-primary)",
-            color: "white",
-            border: "none",
-            borderRadius: "var(--radius)",
-            padding: "8px 16px",
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-        >
+        <Button variant="primary" onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancelar" : "Nueva Acta"}
-        </button>
+        </Button>
       </div>
-
       {showForm && (
-        <div style={{
-          background: "var(--color-bg)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius)",
-          padding: 20,
-          marginBottom: 24,
-        }}>
+        <div className="card" style={{ marginBottom: 24 }}>
           <h3 style={{ marginTop: 0 }}>Nueva Acta</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <input
-              type="text"
-              placeholder="Titulo"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <textarea
-              placeholder="Contenido"
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-              rows={10}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)", boxSizing: "border-box" }}
-            />
-            <button
-              onClick={() => createMutation.mutate(form)}
-              disabled={createMutation.isPending || !form.title || !form.content}
-              style={{
-                background: "var(--color-primary)",
-                color: "white",
-                border: "none",
-                borderRadius: "var(--radius)",
-                padding: "8px 16px",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
+            <Input type="text" placeholder="Titulo" value={form.title} onChange={(v) => setForm({ ...form, title: v })} />
+            <Textarea placeholder="Contenido" value={form.content} onChange={(v) => setForm({ ...form, content: v })} rows={10} />
+            <Button variant="primary" disabled={createMutation.isPending || !form.title || !form.content} onClick={() => createMutation.mutate(form)}>
               {createMutation.isPending ? "Creando..." : "Guardar Acta"}
-            </button>
+            </Button>
           </div>
         </div>
       )}
-
       {isLoading ? (
-        <p>Cargando...</p>
+        <p className="loading">Cargando...</p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {minutes?.map((m) => (
-            <div key={m.id} style={{
-              background: "var(--color-bg)",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius)",
-              padding: 20,
-            }}>
+            <div key={m.id} className="card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <h3 style={{ margin: 0 }}>{m.title}</h3>
-                <span style={{
-                  fontSize: 12,
-                  color: "var(--color-text-muted)",
-                  background: "var(--color-bg-subtle)",
-                  padding: "2px 8px",
-                  borderRadius: "var(--radius)",
-                }}>
+                <span style={{ fontSize: 12, color: "var(--color-text-muted)", background: "var(--color-bg-subtle)", padding: "2px 8px", borderRadius: "var(--radius)" }}>
                   Version {m.version}
                 </span>
               </div>

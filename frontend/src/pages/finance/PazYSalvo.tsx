@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { type PazYSalvo } from "../../types";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
 
 const API_BASE = "/api/finance";
 
@@ -20,27 +22,13 @@ export default function PazYSalvo() {
   return (
     <div>
       <h1 style={{ fontSize: 24, marginBottom: 24 }}>Paz y Salvo</h1>
-
-      <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
-        <input
-          type="number"
-          placeholder="Resident ID"
-          value={residentId}
-          onChange={(e) => setResidentId(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        />
+      <div style={{ display: "flex", gap: "var(--space-3)", marginBottom: 24 }}>
+        <Input type="number" placeholder="Resident ID" value={residentId} onChange={setResidentId} style={{ width: 200 }} />
       </div>
-
       {isLoading ? (
-        <p>Cargando...</p>
+        <p className="loading">Cargando...</p>
       ) : pazYSalvo ? (
-        <div style={{
-          background: "var(--color-bg)",
-          border: `2px solid ${pazYSalvo.is_current ? "var(--color-success)" : "var(--color-error)"}`,
-          borderRadius: "var(--radius)",
-          padding: 24,
-          textAlign: "center",
-        }}>
+        <div className="card" style={{ border: `2px solid ${pazYSalvo.is_current ? "var(--color-success)" : "var(--color-error)"}`, textAlign: "center" }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>
             {pazYSalvo.is_current ? "✅" : "⚠"}
           </div>
@@ -65,18 +53,9 @@ export default function PazYSalvo() {
             </div>
           </div>
           {pazYSalvo.is_current && (
-            <button style={{
-              background: "var(--color-success)",
-              color: "white",
-              border: "none",
-              borderRadius: "var(--radius)",
-              padding: "10px 24px",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: 14,
-            }}>
+            <Button variant="primary" style={{ background: "var(--color-success)", border: "none" }}>
               Descargar Certificado
-            </button>
+            </Button>
           )}
         </div>
       ) : residentId ? (

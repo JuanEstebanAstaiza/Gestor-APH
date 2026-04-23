@@ -1,19 +1,26 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { useAuth } from "../../hooks/useAuth";
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
+import Button from "../../components/common/Button";
 
 export default function UserForm() {
-  const { user } = useAuth();
   const qc = useQueryClient();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [role, setRole] = useState("residente");
-  const [error, setError] = useState("");
-
   const isEdit = window.location.pathname.includes("/users/");
+
+  const { data } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => api.get(window.location.pathname).then((r) => r.data),
+    enabled: isEdit,
+  });
+
+  const [email, setEmail] = useState(data?.email || "");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState(data?.full_name || "");
+  const [phone, setPhone] = useState(data?.phone || "");
+  const [role, setRole] = useState(data?.role || "residente");
+  const [error, setError] = useState("");
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -36,51 +43,43 @@ export default function UserForm() {
     mutation.mutate();
   };
 
+  const options = [
+    { value: "admin", label: "Administrador" },
+    { value: "consejo", label: "Consejo" },
+    { value: "vigilancia", label: "Vigilancia" },
+    { value: "residente", label: "Residente" },
+  ];
+
   return (
     <div style={{ maxWidth: 480 }}>
       <h1 style={{ fontSize: 24, marginBottom: 24 }}>{isEdit ? "Editar usuario" : "Nuevo usuario"}</h1>
-      {error && (
-        <div style={{ background: "var(--color-danger-light)", color: "var(--color-danger)", padding: 8, borderRadius: 8, marginBottom: 16 }}>
-          {error}
-        </div>
-      )}
+      {error && <div className="form-error">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Email</label>
+          <Input type="email" value={email} onChange={setEmail} required />
         </div>
         {!isEdit && (
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: "block", marginBottom: 4 }}>Contraseña</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
-              style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+          <div className="form-group">
+            <label className="form-label">Contraseña</label>
+            <Input type="password" value={password} onChange={setPassword} required />
           </div>
         )}
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Nombre</label>
-          <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} required
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Nombre</label>
+          <Input value={fullName} onChange={setFullName} required />
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Teléfono</label>
-          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+        <div className="form-group">
+          <label className="form-label">Telefono</label>
+          <Input type="tel" value={phone} onChange={setPhone} />
         </div>
-        <div style={{ marginBottom: 24 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Rol</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)}
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }}>
-            <option value="admin">Administrador</option>
-            <option value="consejo">Consejo</option>
-            <option value="vigilancia">Vigilancia</option>
-            <option value="residente">Residente</option>
-          </select>
+        <div className="form-group">
+          <label className="form-label">Rol</label>
+          <Select value={role} onChange={setRole} options={options} />
         </div>
-        <button type="submit"
-          style={{ padding: "10px 24px", background: "var(--color-primary)", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer" }}>
+        <Button type="submit" variant="primary">
           {isEdit ? "Guardar" : "Crear"}
-        </button>
+        </Button>
       </form>
     </div>
   );

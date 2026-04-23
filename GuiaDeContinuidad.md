@@ -10,7 +10,7 @@
 | 13 | Modulo G — Reservas y Convivencia | COMPLETADA | [PHASE_13_MODULO_G_RESERVAS.md](Documentacion/fases/PHASE_13_MODULO_G_RESERVAS.md) |
 | 14 | Modulo F — Asambleas y Consejo | COMPLETADA | [PHASE_14_MODULO_F_ASAMBLEAS.md](Documentacion/fases/PHASE_14_MODULO_F_ASAMBLEAS.md) |
 | 15 | Modulo D — Directorio de Proveedores | COMPLETADA | [PHASE_15_MODULO_D_PROVEEDORES.md](Documentacion/fases/PHASE_15_MODULO_D_PROVEEDORES.md) |
-| 16 | UI/UX refinement | PENDIENTE | [PHASE_16_UI_UX.md](Documentacion/fases/PHASE_16_UI_UX.md) |
+| 16 | UI/UX refinement | COMPLETADA | [PHASE_16_UI_UX.md](Documentacion/fases/PHASE_16_UI_UX.md) |
 | 17 | Testing | PENDIENTE | [PHASE_17_TESTING.md](Documentacion/fases/PHASE_17_TESTING.md) |
 | 18 | Docker production | PENDIENTE | [PHASE_18_DOCKER_PRODUCTION.md](Documentacion/fases/PHASE_18_DOCKER_PRODUCTION.md) |
 
@@ -94,3 +94,45 @@
 - Alert type enum: maintenance/contract_expiry/warranty_expiry
 - Contracts no tienen asset_id directo (se vinculan solo al provider)
 - RBAC: consejo(3)+ CRUD providers/alerts; admin(4)+ generate contract alerts
+
+## Resumen Fase 16 — UI/UX Refinement
+
+### Deliverables design system
+- `frontend/src/styles/theme.css` — 400+ line design system con CSS variables (colors, typography, spacing, borders, shadows, animations)
+- Utility classes: btn, input, select, textarea, card, badge, data-table, pagination, modal, toast, empty-state
+
+### Component library
+- `Button.tsx` — 4 variants (primary/secondary/ghost/danger), 3 sizes (sm/base/lg), href support
+- `Input.tsx` — Multiple input types, error class
+- `Select.tsx` — Dropdown con options array
+- `Textarea.tsx` — Resizable textarea con error support
+- `Modal.tsx` — Overlay modal con header/body/footer
+- `Toast.tsx` — Sistema de notificaciones
+
+### Component improvements
+- `Sidebar.tsx` — Nav groups (Principal, Gestion, Administracion, Convivencia), role-based filtering (minRole), collapsible, profile section
+- `Header.tsx` — Refactored a usar Button component
+- `DataTable.tsx` — Client-side sorting, pagination UI, empty states, hover rows, sortable indicators
+
+### Pages refactored (inline styles → components/CSS classes)
+- Auth: Login, Register
+- Users: UserList, UserForm, Profile
+- Visitors: VisitorList, VisitorForm
+- Authorizations: AuthorizationList, AuthorizationForm
+- Census: ResidentList, ResidentForm
+- Assets: AssetList, AssetForm
+- Documents: DocumentDashboard, DocumentUpload, DocumentSearch, ShareLinkView
+- Audit: AuditLog
+- Settings: Settings
+- Dashboard: Dashboard
+- Finance: InvoiceDashboard, BalanceView, PazYSalvo, ImportData, PaymentHistory
+- Communication: PQRSForm, PQRSList, FAQAdmin, FAQView, CircularDashboard, CommunicationHistory
+- Reservations: CalendarView, ReservationForm, ReservationList
+- Convivencia: InfractionList, InfractionForm, RegulationView
+- Assemblies: AssemblyList, AssemblyDetail, AgendaBuilder, AttendanceTracker, VoteForm, MinutesView, TaskList, TaskDetail
+
+### Decisiones clave
+- CSS variables como unico sistema de estilizado (no inline styles, no CSS-in-JS)
+- Component props preferred over inline styles
+- Consistent 4px spacing scale throughout
+- Mobile-first responsive design

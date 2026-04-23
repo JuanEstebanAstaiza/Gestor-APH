@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
+import Button from "../../components/common/Button";
 
 export default function ShareLinkView() {
   const { token } = useParams();
+
   const { data, isLoading } = useQuery({
     queryKey: ["share", token],
     queryFn: () => api.get(`/api/documents/share/${token}`).then((r) => r.data),
@@ -11,7 +13,7 @@ export default function ShareLinkView() {
   });
 
   if (isLoading) return <div className="loading">Cargando...</div>;
-  if (!data) return <div style={{ textAlign: "center", padding: 40 }}>Documento no disponible</div>;
+  if (!data) return <div className="empty-state"><div className="empty-state-icon">📄</div><h3>Documento no disponible</h3></div>;
 
   return (
     <div style={{ maxWidth: 600, margin: "40px auto", padding: 24, border: "1px solid var(--color-border)", borderRadius: 8 }}>
@@ -20,13 +22,9 @@ export default function ShareLinkView() {
       <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginBottom: 24 }}>
         Tipo: {data.file_type} | Fecha: {data.created_at}
       </div>
-      <a
-        href={data.file_path}
-        download
-        style={{ display: "inline-block", padding: "10px 24px", background: "var(--color-primary)", color: "#fff", borderRadius: 8, textDecoration: "none" }}
-      >
+      <Button href={data.file_path} variant="primary">
         Descargar
-      </a>
+      </Button>
     </div>
   );
 }

@@ -23,8 +23,10 @@ export default function DocumentSearch() {
   return (
     <div>
       <h1 style={{ fontSize: 24, marginBottom: 16 }}>Buscar documentos</h1>
-      <SearchBar onSearch={setQuery} placeholder="Buscar por título..." />
-      {query.length >= 2 && data?.data && <DataTable columns={columns} data={data.data} />}
+      <SearchBar onSearch={setQuery} placeholder="Buscar por titulo..." />
+      <div style={{ marginTop: 16 }}>
+        {query.length >= 2 && data?.data && <DataTable columns={columns} data={data.data} />}
+      </div>
     </div>
   );
 }

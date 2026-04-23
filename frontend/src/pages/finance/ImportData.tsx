@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import Button from "../../components/common/Button";
 
 const API_BASE = "/api/finance";
 
@@ -28,58 +29,22 @@ export default function ImportData() {
   return (
     <div>
       <h1 style={{ fontSize: 24, marginBottom: 24 }}>Importar Datos Contables</h1>
-
-      <div style={{
-        background: "var(--color-bg)",
-        border: "1px solid var(--color-border)",
-        borderRadius: "var(--radius)",
-        padding: 24,
-      }}>
+      <div className="card">
         <p style={{ color: "var(--color-text-muted)", marginBottom: 16 }}>
           Importar estados de cartera y pagos desde sistemas contables externos (CSV, Excel).
         </p>
-
-        <input
-          type="file"
-          accept=".csv,.xlsx,.xls"
-          onChange={(e) => setFile(e.target.files?.[0] || null)}
-          style={{ marginBottom: 16 }}
-        />
-
+        <input type="file" accept=".csv,.xlsx,.xls" onChange={(e) => setFile(e.target.files?.[0] || null)} style={{ marginBottom: 16 }} />
         {file && (
           <p style={{ marginBottom: 12 }}>
             Archivo seleccionado: {file.name} ({(file.size / 1024).toFixed(1)} KB)
           </p>
         )}
-
-        <button
-          onClick={handleImport}
-          disabled={importing || !file}
-          style={{
-            background: importing || !file ? "#9ca3af" : "var(--color-primary)",
-            color: "white",
-            border: "none",
-            borderRadius: "var(--radius)",
-            padding: "10px 24px",
-            cursor: importing || !file ? "not-allowed" : "pointer",
-            fontWeight: 600,
-          }}
-        >
+        <Button variant="primary" disabled={importing || !file} onClick={handleImport}>
           {importing ? "Importando..." : "Importar"}
-        </button>
+        </Button>
       </div>
-
       {result && (
-        <div style={{
-          background: "var(--color-bg-subtle)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius)",
-          padding: 16,
-          marginTop: 24,
-          fontFamily: "monospace",
-          fontSize: 13,
-          whiteSpace: "pre-wrap",
-        }}>
+        <div style={{ background: "var(--color-bg-subtle)", border: "1px solid var(--color-border)", borderRadius: "var(--radius)", padding: 16, marginTop: 24, fontFamily: "monospace", fontSize: 13, whiteSpace: "pre-wrap" }}>
           {result}
         </div>
       )}

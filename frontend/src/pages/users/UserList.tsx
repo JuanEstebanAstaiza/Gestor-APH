@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import DataTable from "../../components/common/DataTable";
+import Button from "../../components/common/Button";
+import { ROLE_LABELS } from "../../lib/constants";
 
 export default function UserList() {
   const { data } = useQuery({
@@ -11,30 +13,31 @@ export default function UserList() {
   const columns = [
     { key: "full_name", label: "Nombre" },
     { key: "email", label: "Email" },
-    { key: "role", label: "Rol" },
+    { key: "role", label: "Rol", sortable: true },
     { key: "status", label: "Estado" },
     { key: "is_active", label: "Activo" },
   ];
 
+  const roleLabels = ROLE_LABELS;
+
   return (
     <div>
       <h1 style={{ fontSize: 24, marginBottom: 16 }}>Usuarios</h1>
-      <a
-        href="/users/new"
-        style={{
-          display: "inline-block",
-          padding: "8px 16px",
-          background: "var(--color-primary)",
-          color: "#fff",
-          borderRadius: "var(--radius)",
-          textDecoration: "none",
-          marginBottom: 16,
-          fontSize: 14,
-        }}
-      >
+      <Button href="/users/new" variant="primary">
         + Nuevo usuario
-      </a>
-      {data?.data && <DataTable columns={columns} data={data.data} />}
+      </Button>
+      <div style={{ marginTop: 16 }}>
+        {data?.data && (
+          <DataTable
+            columns={columns}
+            data={data.data.map((u: Record<string, unknown>) => ({
+              ...u,
+              role: roleLabels[u.role as string] || u.role,
+              is_active: u.is_active ? "Si" : "No",
+            }))}
+          />
+        )}
+      </div>
     </div>
   );
 }

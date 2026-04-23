@@ -3,10 +3,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth";
 import { type InfractionCreate } from "../../types";
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
+import Button from "../../components/common/Button";
 
 const API_BASE = "/api/reservations";
 
-const categories = [
+const CATEGORY_OPTIONS = [
   { value: "ruido", label: "Ruido" },
   { value: "mascotas", label: "Mascotas" },
   { value: "areas_comunes", label: "Areas Comunes" },
@@ -14,7 +17,7 @@ const categories = [
   { value: "otros", label: "Otros" },
 ];
 
-const severities = [
+const SEVERITY_OPTIONS = [
   { value: "minor", label: "Leve" },
   { value: "moderate", label: "Moderada" },
   { value: "severe", label: "Grave" },
@@ -42,80 +45,21 @@ export default function InfractionForm() {
     },
   });
 
-  if (!user || parseInt(user.role) < 3) {
-    return null;
-  }
+  if (!user || parseInt(user.role) < 3) return null;
 
   return (
-    <div style={{
-      background: "var(--color-bg)",
-      border: "1px solid var(--color-border)",
-      borderRadius: "var(--radius)",
-      padding: 20,
-    }}>
+    <div className="card">
       <h3 style={{ marginTop: 0, marginBottom: 16 }}>Nueva Infraccion</h3>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12 }}>
-        <input
-          type="number"
-          placeholder="Resident ID"
-          value={form.resident_id || ""}
-          onChange={(e) => setForm({ ...form, resident_id: parseInt(e.target.value) || 0 })}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        />
-        <input
-          type="number"
-          placeholder="Asset ID"
-          value={form.asset_id || ""}
-          onChange={(e) => setForm({ ...form, asset_id: parseInt(e.target.value) || 0 })}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        />
-        <select
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        >
-          {categories.map((c) => (
-            <option key={c.value} value={c.value}>{c.label}</option>
-          ))}
-        </select>
-        <select
-          value={form.severity}
-          onChange={(e) => setForm({ ...form, severity: e.target.value })}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        >
-          {severities.map((s) => (
-            <option key={s.value} value={s.value}>{s.label}</option>
-          ))}
-        </select>
-        <input
-          type="number"
-          placeholder="Multa (opcional)"
-          value={form.fine_amount || ""}
-          onChange={(e) => setForm({ ...form, fine_amount: e.target.value })}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        />
-        <input
-          type="text"
-          placeholder="Descripcion"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        />
-        <button
-          onClick={() => createMutation.mutate(form)}
-          disabled={createMutation.isPending || !form.description}
-          style={{
-            background: "var(--color-primary)",
-            color: "white",
-            border: "none",
-            borderRadius: "var(--radius)",
-            padding: "8px 16px",
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-        >
+        <Input type="number" placeholder="Resident ID" value={form.resident_id || ""} onChange={(v) => setForm({ ...form, resident_id: parseInt(v) || 0 })} />
+        <Input type="number" placeholder="Asset ID" value={form.asset_id || ""} onChange={(v) => setForm({ ...form, asset_id: parseInt(v) || 0 })} />
+        <Select value={form.category} onChange={(v) => setForm({ ...form, category: v })} options={CATEGORY_OPTIONS} />
+        <Select value={form.severity} onChange={(v) => setForm({ ...form, severity: v })} options={SEVERITY_OPTIONS} />
+        <Input type="number" placeholder="Multa (opcional)" value={form.fine_amount || ""} onChange={(v) => setForm({ ...form, fine_amount: v })} />
+        <Input type="text" placeholder="Descripcion" value={form.description} onChange={(v) => setForm({ ...form, description: v })} />
+        <Button variant="primary" disabled={createMutation.isPending || !form.description} onClick={() => createMutation.mutate(form)}>
           {createMutation.isPending ? "Creando..." : "Registrar Infraccion"}
-        </button>
+        </Button>
       </div>
     </div>
   );

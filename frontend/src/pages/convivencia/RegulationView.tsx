@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { type Regulation } from "../../types";
+import Button from "../../components/common/Button";
 
 const API_BASE = "/api/reservations";
 
@@ -24,56 +25,26 @@ export default function RegulationView() {
     return Array.from(unique);
   })();
 
-  if (isLoading) return <p>Cargando reglamento...</p>;
+  if (isLoading) return <p className="loading">Cargando reglamento...</p>;
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h1 style={{ fontSize: 24 }}>Reglamento de Propiedad Horizontal</h1>
       </div>
-
       {chapters.length > 0 && (
         <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
-          <button
-            onClick={() => setSelectedChapter("")}
-            style={{
-              padding: "6px 12px",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius)",
-              cursor: "pointer",
-              background: !selectedChapter ? "var(--color-primary)" : "transparent",
-              color: !selectedChapter ? "white" : "var(--color-text)",
-              fontWeight: selectedChapter ? 400 : 600,
-            }}
-          >
+          <Button variant={selectedChapter ? "secondary" : "primary"} size="sm" onClick={() => setSelectedChapter("")}>
             Todos
-          </button>
+          </Button>
           {chapters.map((ch) => (
-            <button
-              key={ch}
-              onClick={() => setSelectedChapter(ch)}
-              style={{
-                padding: "6px 12px",
-                border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius)",
-                cursor: "pointer",
-                background: selectedChapter === ch ? "var(--color-primary)" : "transparent",
-                color: selectedChapter === ch ? "white" : "var(--color-text)",
-                fontWeight: selectedChapter === ch ? 600 : 400,
-              }}
-            >
+            <Button key={ch} variant={selectedChapter === ch ? "primary" : "secondary"} size="sm" onClick={() => setSelectedChapter(ch)}>
               {ch}
-            </button>
+            </Button>
           ))}
         </div>
       )}
-
-      <div style={{
-        background: "var(--color-bg)",
-        border: "1px solid var(--color-border)",
-        borderRadius: "var(--radius)",
-        overflow: "hidden",
-      }}>
+      <div className="card">
         {regulations?.length === 0 ? (
           <div style={{ padding: 24, textAlign: "center", color: "var(--color-text-muted)" }}>
             No hay reglamentos registrados
@@ -91,24 +62,13 @@ export default function RegulationView() {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
                   {r.section_number && (
-                    <span style={{
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: "var(--color-primary)",
-                      background: "var(--color-bg-subtle)",
-                      padding: "2px 8px",
-                      borderRadius: "var(--radius)",
-                    }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "var(--color-primary)", background: "var(--color-bg-subtle)", padding: "2px 8px", borderRadius: "var(--radius)" }}>
                       Art. {r.section_number}
                     </span>
                   )}
                   <h3 style={{ margin: 0, fontSize: 18 }}>{r.title}</h3>
                 </div>
-                <div style={{
-                  whiteSpace: "pre-wrap",
-                  lineHeight: 1.6,
-                  color: "var(--color-text)",
-                }}>
+                <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.6, color: "var(--color-text)" }}>
                   {r.content}
                 </div>
               </div>

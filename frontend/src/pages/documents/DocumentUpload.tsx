@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import FileUpload from "../../components/common/FileUpload";
+import Input from "../../components/common/Input";
+import Textarea from "../../components/common/Textarea";
+import Button from "../../components/common/Button";
 
 export default function DocumentUpload() {
   const [title, setTitle] = useState("");
@@ -26,7 +29,7 @@ export default function DocumentUpload() {
 
   const handleUpload = async (file: File) => {
     if (!title.trim()) {
-      setError("El título es requerido");
+      setError("El titulo es requerido");
       return;
     }
     setError("");
@@ -36,16 +39,14 @@ export default function DocumentUpload() {
   return (
     <div style={{ maxWidth: 600 }}>
       <h1 style={{ fontSize: 24, marginBottom: 24 }}>Subir documento</h1>
-      {error && <div style={{ background: "var(--color-danger-light)", color: "var(--color-danger)", padding: 8, borderRadius: 8, marginBottom: 16 }}>{error}</div>}
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ display: "block", marginBottom: 4 }}>Título</label>
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
-          style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+      {error && <div className="form-error">{error}</div>}
+      <div className="form-group">
+        <label className="form-label">Titulo</label>
+        <Input value={title} onChange={setTitle} required />
       </div>
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ display: "block", marginBottom: 4 }}>Descripción</label>
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3}
-          style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }} />
+      <div className="form-group">
+        <label className="form-label">Descripcion</label>
+        <Textarea value={description} onChange={setDescription} />
       </div>
       <FileUpload onUpload={handleUpload} accept=".pdf,.doc,.docx,.jpg,.png,.xls,.xlsx" />
     </div>

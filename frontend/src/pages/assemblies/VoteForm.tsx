@@ -3,10 +3,13 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth";
+import Select from "../../components/common/Select";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
 
 const API_BASE = "/api/assemblies";
 
-const voteOptions = [
+const VOTE_OPTIONS = [
   { value: "favor", label: "A favor" },
   { value: "en_contra", label: "En contra" },
   { value: "abstencion", label: "Abstencion" },
@@ -43,52 +46,15 @@ export default function VoteForm() {
   if (!user) return null;
 
   return (
-    <div style={{
-      background: "var(--color-bg)",
-      border: "1px solid var(--color-border)",
-      borderRadius: "var(--radius)",
-      padding: 20,
-    }}>
+    <div className="card">
       <h3 style={{ marginTop: 0 }}>Votacion Digital</h3>
       <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-        <select
-          value={option}
-          onChange={(e) => setOption(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        >
-          {voteOptions.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-        <input
-          type="number"
-          placeholder="Tema ID (opcional)"
-          value={agendaItemId}
-          onChange={(e) => setAgendaItemId(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        />
-        <input
-          type="text"
-          placeholder="Notas (opcional)"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        />
-        <button
-          onClick={() => voteMutation.mutate()}
-          disabled={voteMutation.isPending}
-          style={{
-            background: "var(--color-primary)",
-            color: "white",
-            border: "none",
-            borderRadius: "var(--radius)",
-            padding: "8px 16px",
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-        >
+        <Select value={option} onChange={setOption} options={VOTE_OPTIONS} />
+        <Input type="number" placeholder="Tema ID (opcional)" value={agendaItemId} onChange={setAgendaItemId} style={{ width: 160 }} />
+        <Input type="text" placeholder="Notas (opcional)" value={notes} onChange={setNotes} style={{ width: 200 }} />
+        <Button variant="primary" disabled={voteMutation.isPending} onClick={() => voteMutation.mutate()}>
           {voteMutation.isPending ? "Votando..." : "Votar"}
-        </button>
+        </Button>
       </div>
     </div>
   );

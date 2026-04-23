@@ -1,27 +1,29 @@
 import { useAuth } from "../../hooks/useAuth";
+import { ROLE_LABELS } from "../../lib/constants";
 
 export default function Profile() {
   const { user } = useAuth();
   if (!user) return null;
+  const roleLabel = ROLE_LABELS[user.role];
 
   return (
     <div style={{ maxWidth: 480 }}>
       <h1 style={{ fontSize: 24, marginBottom: 24 }}>Mi perfil</h1>
-      <div style={{ background: "var(--color-bg)", border: "1px solid var(--color-border)", borderRadius: 8, padding: 24 }}>
+      <div className="card">
         <div style={{ marginBottom: 12 }}>
-          <strong>Nombre:</strong> {user.full_name}
+          <span className="form-label">Nombre:</span> {user.full_name}
         </div>
         <div style={{ marginBottom: 12 }}>
-          <strong>Email:</strong> {user.email}
+          <span className="form-label">Email:</span> {user.email}
         </div>
         <div style={{ marginBottom: 12 }}>
-          <strong>Teléfono:</strong> {user.phone || "No definido"}
+          <span className="form-label">Telefono:</span> {user.phone || "No definido"}
         </div>
         <div style={{ marginBottom: 12 }}>
-          <strong>Rol:</strong> {user.role}
+          <span className="form-label">Rol:</span> {roleLabel}
         </div>
         <div>
-          <strong>Estado:</strong> {user.status}
+          <span className="form-label">Estado:</span> {user.status}
         </div>
       </div>
     </div>

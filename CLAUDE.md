@@ -51,7 +51,7 @@ frontend/src/
 13. Modulo G — Reservas y Convivencia — [PHASE_13_MODULO_G_RESERVAS.md](Documentacion/fases/PHASE_13_MODULO_G_RESERVAS.md) **COMPLETADA**
 14. Modulo F — Asambleas y Consejo — [PHASE_14_MODULO_F_ASAMBLEAS.md](Documentacion/fases/PHASE_14_MODULO_F_ASAMBLEAS.md) **COMPLETADA**
 15. Modulo D — Directorio de Proveedores — [PHASE_15_MODULO_D_PROVEEDORES.md](Documentacion/fases/PHASE_15_MODULO_D_PROVEEDORES.md) **COMPLETADA**
-16. UI/UX refinement — [PHASE_16_UI_UX.md](Documentacion/fases/PHASE_16_UI_UX.md)
+16. UI/UX refinement — [PHASE_16_UI_UX.md](Documentacion/fases/PHASE_16_UI_UX.md) **COMPLETADA**
 17. Testing — [PHASE_17_TESTING.md](Documentacion/fases/PHASE_17_TESTING.md)
 18. Docker production — [PHASE_18_DOCKER_PRODUCTION.md](Documentacion/fases/PHASE_18_DOCKER_PRODUCTION.md)
 
@@ -67,4 +67,4 @@ frontend/src/
 - Do NOT delete existing code
 - Do NOT change the stack or schema
 - **NO ALEMBIC** — Schema se gestiona con SQL directo (`init_schema.sql`). Alembic NO se usa por problemas de compatibilidad con Windows/Python 3.12.
-- Inline styles are temporary — refactor in Phase 16
+- Inline styles have been refactored to component props and CSS classes (Phase 16)

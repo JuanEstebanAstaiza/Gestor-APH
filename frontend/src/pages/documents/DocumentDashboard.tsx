@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import DataTable from "../../components/common/DataTable";
+import Button from "../../components/common/Button";
 
 export default function DocumentDashboard() {
   const { data } = useQuery({
@@ -17,15 +18,17 @@ export default function DocumentDashboard() {
   return (
     <div>
       <h1 style={{ fontSize: 24, marginBottom: 16 }}>Documentos</h1>
-      <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-        <a href="/documents/upload" style={{ padding: "8px 16px", background: "var(--color-primary)", color: "#fff", borderRadius: 8, textDecoration: "none", fontSize: 14 }}>
+      <div style={{ display: "flex", gap: "var(--space-3)", marginBottom: "var(--space-4)" }}>
+        <Button href="/documents/upload" variant="primary">
           + Subir documento
-        </a>
-        <a href="/documents/search" style={{ padding: "8px 16px", border: "1px solid var(--color-border)", borderRadius: 8, textDecoration: "none", fontSize: 14 }}>
+        </Button>
+        <Button href="/documents/search" variant="secondary">
           🔍 Buscar
-        </a>
+        </Button>
       </div>
-      {data?.data && <DataTable columns={columns} data={data.data} />}
+      <div style={{ marginTop: 16 }}>
+        {data?.data && <DataTable columns={columns} data={data.data} />}
+      </div>
     </div>
   );
 }

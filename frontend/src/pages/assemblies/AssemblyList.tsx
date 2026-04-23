@@ -3,6 +3,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth";
 import { type Assembly, type AssemblyCreate } from "../../types";
+import Select from "../../components/common/Select";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
+import DataTable from "../../components/common/DataTable";
 
 const API_BASE = "/api/assemblies";
 
@@ -27,6 +31,21 @@ const typeLabels: Record<string, string> = {
   extraordinaria: "Extraordinaria",
   especial: "Especial",
 };
+
+const TYPE_OPTIONS = [
+  { value: "ordinaria", label: "Ordinaria" },
+  { value: "extraordinaria", label: "Extraordinaria" },
+  { value: "especial", label: "Especial" },
+];
+
+const STATUS_OPTIONS = [
+  { value: "", label: "Todos los estados" },
+  { value: "draft", label: "Borrador" },
+  { value: "announced", label: "Anunciada" },
+  { value: "in_progress", label: "En curso" },
+  { value: "completed", label: "Completada" },
+  { value: "cancelled", label: "Cancelada" },
+];
 
 export default function AssemblyList() {
   const { user } = useAuth();
@@ -63,175 +82,67 @@ export default function AssemblyList() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["assemblies"] }),
   });
 
+  const isConsejo = user && parseInt(user.role) >= 3;
+
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h1 style={{ fontSize: 24 }}>Asambleas</h1>
-        {user && parseInt(user.role) >= 3 && (
-          <button
-            onClick={() => setShowForm(!showForm)}
-            style={{
-              background: "var(--color-primary)",
-              color: "white",
-              border: "none",
-              borderRadius: "var(--radius)",
-              padding: "8px 16px",
-              cursor: "pointer",
-              fontWeight: 600,
-            }}
-          >
+        {isConsejo && (
+          <Button variant="primary" onClick={() => setShowForm(!showForm)}>
             {showForm ? "Cancelar" : "Nueva Asamblea"}
-          </button>
+          </Button>
         )}
       </div>
-
-      {showForm && user && parseInt(user.role) >= 3 && (
-        <div style={{
-          background: "var(--color-bg)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius)",
-          padding: 20,
-          marginBottom: 24,
-        }}>
+      {showForm && isConsejo && (
+        <div className="card" style={{ marginBottom: 24 }}>
           <h3 style={{ marginTop: 0 }}>Nueva Asamblea</h3>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
-            <select
-              value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            >
-              <option value="ordinaria">Ordinaria</option>
-              <option value="extraordinaria">Extraordinaria</option>
-              <option value="especial">Especial</option>
-            </select>
-            <input
-              type="text"
-              placeholder="Titulo"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <input
-              type="datetime-local"
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <input
-              type="text"
-              placeholder="Ubicacion"
-              value={form.location || ""}
-              onChange={(e) => setForm({ ...form, location: e.target.value })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <input
-              type="number"
-              placeholder="Quorum %"
-              value={form.quorum_required || ""}
-              onChange={(e) => setForm({ ...form, quorum_required: parseInt(e.target.value) || 0 })}
-              style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-            />
-            <button
-              onClick={() => createMutation.mutate(form)}
-              disabled={createMutation.isPending || !form.title || !form.date}
-              style={{
-                background: "var(--color-primary)",
-                color: "white",
-                border: "none",
-                borderRadius: "var(--radius)",
-                padding: "8px 16px",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
+            <Select value={form.type} onChange={(v) => setForm({ ...form, type: v })} options={TYPE_OPTIONS} />
+            <Input type="text" placeholder="Titulo" value={form.title} onChange={(v) => setForm({ ...form, title: v })} />
+            <Input type="datetime-local" value={form.date} onChange={(v) => setForm({ ...form, date: v })} />
+            <Input type="text" placeholder="Ubicacion" value={form.location || ""} onChange={(v) => setForm({ ...form, location: v })} />
+            <Input type="number" placeholder="Quorum %" value={form.quorum_required || ""} onChange={(v) => setForm({ ...form, quorum_required: parseInt(v) || 0 })} />
+            <Button variant="primary" disabled={createMutation.isPending || !form.title || !form.date} onClick={() => createMutation.mutate(form)}>
               {createMutation.isPending ? "Creando..." : "Guardar"}
-            </button>
+            </Button>
           </div>
         </div>
       )}
-
       <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          style={{ padding: 8, border: "1px solid var(--color-border)", borderRadius: "var(--radius)" }}
-        >
-          <option value="">Todos los estados</option>
-          <option value="draft">Borrador</option>
-          <option value="announced">Anunciada</option>
-          <option value="in_progress">En curso</option>
-          <option value="completed">Completada</option>
-          <option value="cancelled">Cancelada</option>
-        </select>
+        <Select value={statusFilter} onChange={setStatusFilter} options={STATUS_OPTIONS} style={{ width: 160 }} />
       </div>
-
       {isLoading ? (
-        <p>Cargando...</p>
+        <p className="loading">Cargando...</p>
       ) : (
-        <div style={{
-          background: "var(--color-bg)",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius)",
-          overflow: "hidden",
-        }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ background: "var(--color-bg-subtle)" }}>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Tipo</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Titulo</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Fecha</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Ubicacion</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Quorum</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Estado</th>
-                <th style={{ padding: 12, textAlign: "left", borderBottom: "1px solid var(--color-border)" }}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assemblies?.map((a) => (
-                <tr key={a.id} style={{ borderBottom: "1px solid var(--color-border)" }}>
-                  <td style={{ padding: 12 }}>{typeLabels[a.type] || a.type}</td>
-                  <td style={{ padding: 12, fontWeight: 600 }}>{a.title}</td>
-                  <td style={{ padding: 12 }}>{a.date}</td>
-                  <td style={{ padding: 12 }}>{a.location || "--"}</td>
-                  <td style={{ padding: 12 }}>{a.quorum_required}% {a.quorum_achieved ? "✓" : ""}</td>
-                  <td style={{ padding: 12 }}>
-                    <span style={{
-                      display: "inline-block",
-                      padding: "2px 8px",
-                      borderRadius: 4,
-                      background: statusColors[a.status] || "#6b7280",
-                      color: "white",
-                      fontSize: 12,
-                      fontWeight: 600,
-                    }}>
-                      {statusLabels[a.status] || a.status}
-                    </span>
-                  </td>
-                  <td style={{ padding: 12 }}>
-                    {a.status === "draft" && parseInt(user?.role || "0") >= 3 && (
-                      <button
-                        onClick={() => announceMutation.mutate(a.id)}
-                        disabled={announceMutation.isPending}
-                        style={{
-                          background: "#3b82f6",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "var(--radius)",
-                          padding: "4px 8px",
-                          cursor: "pointer",
-                          fontSize: 12,
-                        }}
-                      >
-                        Anunciar
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-              {!assemblies?.length && <tr><td colSpan={7} style={{ padding: 24, textAlign: "center", color: "var(--color-text-muted)" }}>No hay asambleas</td></tr>}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={[
+            { key: "type", label: "Tipo" },
+            { key: "title", label: "Titulo" },
+            { key: "date", label: "Fecha" },
+            { key: "location", label: "Ubicacion" },
+            { key: "quorum", label: "Quorum" },
+            { key: "status", label: "Estado" },
+            { key: "actions", label: "Acciones" },
+          ]}
+          data={assemblies?.map((a) => ({
+            ...a,
+            type: typeLabels[a.type] || a.type,
+            location: a.location || "--",
+            quorum: `${a.quorum_required}% ${a.quorum_achieved ? "✓" : ""}`,
+            status: (
+              <span style={{ display: "inline-block", padding: "2px 8px", borderRadius: 4, background: statusColors[a.status] || "#6b7280", color: "white", fontSize: 12, fontWeight: 600 }}>
+                {statusLabels[a.status] || a.status}
+              </span>
+            ),
+            actions: a.status === "draft" && isConsejo ? (
+              <Button variant="ghost" size="sm" style={{ background: "#3b82f6", color: "white", border: "none" }} disabled={announceMutation.isPending} onClick={() => announceMutation.mutate(a.id)}>
+                Anunciar
+              </Button>
+            ) : null,
+          })) || []}
+          emptyMessage="No hay asambleas"
+        />
       )}
     </div>
   );

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api";
+import Select from "../../components/common/Select";
+import Button from "../../components/common/Button";
 
 export default function ResidentForm() {
   const [propertyType, setPropertyType] = useState("owner");
@@ -23,23 +25,24 @@ export default function ResidentForm() {
     mutation.mutate();
   };
 
+  const options = [
+    { value: "owner", label: "Propietario" },
+    { value: "tenant", label: "Arrendatario" },
+    { value: "occupant", label: "Ocupante" },
+  ];
+
   return (
     <div style={{ maxWidth: 480 }}>
       <h1 style={{ fontSize: 24, marginBottom: 24 }}>Nuevo residente</h1>
-      {error && <div style={{ background: "var(--color-danger-light)", color: "var(--color-danger)", padding: 8, borderRadius: 8, marginBottom: 16 }}>{error}</div>}
+      {error && <div className="form-error">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 24 }}>
-          <label style={{ display: "block", marginBottom: 4 }}>Tipo</label>
-          <select value={propertyType} onChange={(e) => setPropertyType(e.target.value)}
-            style={{ width: "100%", padding: 10, border: "1px solid var(--color-border)", borderRadius: 8 }}>
-            <option value="owner">Propietario</option>
-            <option value="tenant">Arrendatario</option>
-            <option value="occupant">Ocupante</option>
-          </select>
+        <div className="form-group">
+          <label className="form-label">Tipo</label>
+          <Select value={propertyType} onChange={setPropertyType} options={options} />
         </div>
-        <button type="submit" style={{ padding: "10px 24px", background: "var(--color-primary)", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer" }}>
+        <Button type="submit" variant="primary">
           Crear
-        </button>
+        </Button>
       </form>
     </div>
   );
