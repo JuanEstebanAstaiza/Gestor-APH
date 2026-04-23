@@ -57,8 +57,8 @@ export default function AgendaBuilder() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
             <Input type="text" placeholder="Tema" value={form.topic} onChange={(v) => setForm({ ...form, topic: v })} />
             <Input type="number" placeholder="Orden" value={String(form.order)} onChange={(v) => setForm({ ...form, order: parseInt(v) || 1 })} />
-            <Input type="number" placeholder="Duracion (min)" value={form.duration_minutes || ""} onChange={(v) => setForm({ ...form, duration_minutes: parseInt(v) || 0 })} />
-            <Input type="number" placeholder="Presentador ID" value={form.presenter_id || ""} onChange={(v) => setForm({ ...form, presenter_id: parseInt(v) || 0 })} />
+            <Input type="number" placeholder="Duracion (min)" value={form.duration_minutes ? String(form.duration_minutes) : ""} onChange={(v) => setForm({ ...form, duration_minutes: parseInt(v) || 0 })} />
+            <Input type="number" placeholder="Presentador ID" value={form.presenter_id ? String(form.presenter_id) : ""} onChange={(v) => setForm({ ...form, presenter_id: parseInt(v) || 0 })} />
             <Button variant="primary" disabled={createMutation.isPending || !form.topic} onClick={() => createMutation.mutate(form)}>
               {createMutation.isPending ? "Agregando..." : "Agregar"}
             </Button>

@@ -4,20 +4,6 @@ import axios from "axios";
 
 const API_BASE = "/api/assemblies";
 
-const statusColors: Record<string, string> = {
-  pending: "#f59e0b",
-  confirmed: "#22c55e",
-  declined: "#ef4444",
-  absent: "#6b7280",
-};
-
-const statusLabels: Record<string, string> = {
-  pending: "Pendiente",
-  confirmed: "Confirmado",
-  declined: "Declinado",
-  absent: "Ausente",
-};
-
 export default function AttendanceTracker() {
   const { id } = useParams<{ id: string }>();
   const assemblyId = parseInt(id || "0");

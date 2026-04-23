@@ -9,6 +9,7 @@ import UserForm from "./pages/users/UserForm";
 import VisitorList from "./pages/visitors/VisitorList";
 import VisitorForm from "./pages/visitors/VisitorForm";
 import AuthorizationList from "./pages/authorizations/AuthorizationList";
+import AuthorizationForm from "./pages/authorizations/AuthorizationForm";
 import ResidentList from "./pages/census/ResidentList";
 import ResidentForm from "./pages/census/ResidentForm";
 import AssetList from "./pages/assets/AssetList";

@@ -84,7 +84,7 @@ export default function TaskList() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
             <Input type="text" placeholder="Titulo" value={form.title} onChange={(v) => setForm({ ...form, title: v })} />
             <Input type="text" placeholder="Descripcion" value={form.description} onChange={(v) => setForm({ ...form, description: v })} />
-            <Input type="number" placeholder="Asignado a (User ID)" value={form.assigned_to || ""} onChange={(v) => setForm({ ...form, assigned_to: parseInt(v) || 0 })} />
+            <Input type="number" placeholder="Asignado a (User ID)" value={form.assigned_to ? String(form.assigned_to) : ""} onChange={(v) => setForm({ ...form, assigned_to: parseInt(v) || 0 })} />
             <Input type="date" value={form.deadline || ""} onChange={(v) => setForm({ ...form, deadline: v })} />
             <Button variant="primary" disabled={createMutation.isPending || !form.title || !form.description} onClick={() => createMutation.mutate(form)}>
               {createMutation.isPending ? "Creando..." : "Guardar"}

@@ -135,21 +135,17 @@ export default function ReservationList() {
         />
       )}
       {showReject !== null && (
-        <Modal onClose={() => { setShowReject(null); setRejectReason(""); }}>
-          <Modal.Header>
-            <h3 style={{ marginTop: 0 }}>Rechazar Reserva</h3>
-          </Modal.Header>
-          <Modal.Body>
-            <Textarea value={rejectReason} onChange={(v) => setRejectReason(v)} placeholder="Motivo del rechazo" rows={4} />
-          </Modal.Body>
-          <Modal.Footer>
+        <Modal isOpen={showReject !== null} onClose={() => { setShowReject(null); setRejectReason(""); }} title="Rechazar Reserva" footer={
+          <>
             <Button variant="danger" disabled={rejectMutation.isPending} onClick={() => { rejectMutation.mutate({ id: showReject, reason: rejectReason || "Sin motivo" }); setShowReject(null); setRejectReason(""); }}>
               {rejectMutation.isPending ? "Rechazando..." : "Confirmar Rechazo"}
             </Button>
             <Button variant="secondary" onClick={() => { setShowReject(null); setRejectReason(""); }}>
               Cancelar
             </Button>
-          </Modal.Footer>
+          </>
+        }>
+          <Textarea value={rejectReason} onChange={(v) => setRejectReason(v)} placeholder="Motivo del rechazo" rows={4} />
         </Modal>
       )}
     </div>

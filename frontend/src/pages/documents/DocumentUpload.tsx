@@ -4,7 +4,6 @@ import { api } from "../../lib/api";
 import FileUpload from "../../components/common/FileUpload";
 import Input from "../../components/common/Input";
 import Textarea from "../../components/common/Textarea";
-import Button from "../../components/common/Button";
 
 export default function DocumentUpload() {
   const [title, setTitle] = useState("");

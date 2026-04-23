@@ -10,14 +10,6 @@ import Select from "../../components/common/Select";
 
 const API_BASE = "/api/finance";
 
-const statusColors: Record<string, string> = {
-  pending: "#f59e0b",
-  sent: "#3b82f6",
-  paid: "#22c55e",
-  overdue: "#ef4444",
-  cancelled: "#6b7280",
-};
-
 const statusLabels: Record<string, string> = {
   pending: "Pendiente",
   sent: "Enviada",

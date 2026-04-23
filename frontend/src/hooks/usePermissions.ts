@@ -17,7 +17,7 @@ export function usePermissions() {
     return (ROLE_HIERARCHY[user.role] ?? 0) >= (ROLE_HIERARCHY[minRole] ?? 0);
   };
 
-  const hasAnyRole = (roles: string[]) => user?.role in roles;
+  const hasAnyRole = (roles: string[]) => user?.role && roles.includes(user.role);
 
   return { hasRole, hasMinRole, hasAnyRole };
 }

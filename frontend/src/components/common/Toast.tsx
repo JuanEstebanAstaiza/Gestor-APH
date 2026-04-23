@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-
 interface ToastMessage {
   id: number;
   text: string;
@@ -27,7 +25,7 @@ interface ToastContainerProps {
   onRemove: (id: number) => void;
 }
 
-export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
+export function ToastContainer({ toasts }: ToastContainerProps) {
   return (
     <div className="toast-container">
       {toasts.map((t) => (

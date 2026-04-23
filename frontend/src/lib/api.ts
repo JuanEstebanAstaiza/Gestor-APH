@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useAuth } from "../hooks/useAuth";
 
 export const api = axios.create({
   baseURL: "/",
@@ -13,8 +12,13 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        await useAuth.refresh();
-        originalRequest.headers["Authorization"] = `Bearer ${localStorage.getItem("access_token")}`;
+        // Need to call refresh from the auth context
+        // Since we can't call hooks in interceptors, use localStorage
+        const refreshToken = localStorage.getItem("refresh_token");
+        if (!refreshToken) throw new Error("No refresh token");
+        const { data } = await axios.post("/api/auth/refresh", { refresh_token: refreshToken });
+        localStorage.setItem("access_token", data.access_token);
+        api.defaults.headers.common["Authorization"] = `Bearer ${data.access_token}`;
         return axios(originalRequest);
       } catch {
         window.location.href = "/login";

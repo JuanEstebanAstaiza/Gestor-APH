@@ -498,6 +498,36 @@ body {
   to { transform: translateX(0); }
 }
 
+/* ===== Sidebar ===== */
+.sidebar {
+  background: var(--color-bg-sidebar);
+  color: #fff;
+  padding: 16px;
+  transition: width var(--transition);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: var(--font-size-base);
+  opacity: 0.8;
+  transition: opacity var(--transition);
+}
+.sidebar-link:hover {
+  opacity: 1;
+  background: var(--color-bg-sidebar-hover);
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   :root {

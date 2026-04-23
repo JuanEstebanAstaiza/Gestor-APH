@@ -1,5 +1,5 @@
 interface InputProps {
-  type?: "text" | "email" | "password" | "tel" | "number" | "date" | "url" | "search";
+  type?: "text" | "email" | "password" | "tel" | "number" | "date" | "datetime-local" | "month" | "url" | "search";
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;

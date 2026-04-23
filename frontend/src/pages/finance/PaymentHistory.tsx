@@ -7,12 +7,6 @@ import Input from "../../components/common/Input";
 
 const API_BASE = "/api/finance";
 
-const statusColors: Record<string, string> = {
-  pending: "#f59e0b",
-  verified: "#22c55e",
-  rejected: "#ef4444",
-};
-
 const statusLabels: Record<string, string> = {
   pending: "Pendiente",
   verified: "Verificado",

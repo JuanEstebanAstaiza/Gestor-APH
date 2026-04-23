@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { api } from "../lib/api";
 
 export interface AuthUser {

@@ -1,14 +1,21 @@
-import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { ROLE_LABELS } from "../../lib/constants";
 import { useAuthStore } from "../../store/authStore";
 import Button from "./Button";
 
-interface SidebarProps {
-  collapsed: boolean;
+interface NavItem {
+  label: string;
+  icon: string;
+  path: string;
+  minRole: number;
 }
 
-const navGroups: Record<string, { label: string; items: { label: string; icon: string; path: string; minRole: number }[] }[]> = [
+interface NavGroup {
+  label: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
   {
     label: "Principal",
     items: [
@@ -55,105 +62,79 @@ function getUserRoleLevel(role: string): number {
   }
 }
 
-export default function Sidebar({ collapsed }: SidebarProps) {
+export default function Sidebar({ collapsed }: { collapsed: boolean }) {
   const { user } = useAuth();
-  const { sidebarCollapsed, setSidebarCollapsed } = useAuthStore();
+  const { toggleSidebar } = useAuthStore();
   const roleLevel = getUserRoleLevel(user?.role || "");
   const roleLabel = user ? ROLE_LABELS[user.role] : "";
 
   return (
-    <aside
-      style={{
-        width: collapsed ? 64 : 240,
-        background: "var(--color-bg-sidebar)",
-        color: "#fff",
-        padding: collapsed ? "16px 8px" : "16px",
-        transition: "width 0.2s",
-        overflow: "hidden",
-        flexShrink: 0,
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-      }}
-    >
-      {/* Toggle */}
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
-        <button
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "#fff",
-            cursor: "pointer",
-            fontSize: 18,
-            padding: 4,
-            opacity: 0.7,
-          }}
-        >
-          {collapsed ? "▶" : "◀"}
-        </button>
-      </div>
+    <>
+      <aside
+        className="sidebar"
+        style={{
+          width: collapsed ? 64 : 240,
+        }}
+      >
+        {/* Toggle */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+          <Button variant="ghost" size="sm" onClick={toggleSidebar} style={{ background: "transparent", color: "#fff", fontSize: 18, padding: "4px 8px" }}>
+            {collapsed ? "▶" : "◀"}
+          </Button>
+        </div>
 
-      {!collapsed && (
-        <>
-          <h2 style={{ fontSize: 18, marginBottom: 8, padding: "0 8px" }}>Gestor APH</h2>
-          <div style={{ fontSize: 12, opacity: 0.7, padding: "0 8px", marginBottom: 16 }}>
-            {roleLabel}
-          </div>
-        </>
-      )}
-
-      {/* Navigation */}
-      <nav style={{ flex: 1 }}>
-        {navGroups.map((group) => (
-          <div key={group.label} style={{ marginBottom: collapsed ? 0 : 16 }}>
-            {!collapsed && (
-              <div style={{ fontSize: 11, textTransform: "uppercase", opacity: 0.5, padding: "0 8px", marginBottom: 4, letterSpacing: 1 }}>
-                {group.label}
-              </div>
-            )}
-            {group.items
-              .filter((item) => roleLevel >= item.minRole)
-              .map((item) => (
-                <a
-                  key={item.path}
-                  href={item.path}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: collapsed ? "8px 0" : "8px 12px",
-                    justifyContent: collapsed ? "center" : "flex-start",
-                    color: "#fff",
-                    textDecoration: "none",
-                    borderRadius: collapsed ? 4 : 6,
-                    fontSize: 14,
-                    opacity: 0.8,
-                    transition: "opacity 0.2s",
-                    marginBottom: collapsed ? 4 : 0,
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
-                >
-                  <span style={{ fontSize: 18 }}>{item.icon}</span>
-                  {!collapsed && <span>{item.label}</span>}
-                </a>
-              ))}
-          </div>
-        ))}
-      </nav>
-
-      {/* Bottom: Profile */}
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 8 }}>
-        {!collapsed ? (
-          <div style={{ fontSize: 12, opacity: 0.7, padding: "0 8px" }}>
-            <div style={{ marginBottom: 2 }}>{user?.full_name}</div>
-            <div style={{ fontSize: 11 }}>{user?.email}</div>
-          </div>
-        ) : (
-          <div style={{ textAlign: "center", fontSize: 18 }}>👤</div>
+        {!collapsed && (
+          <>
+            <h2 style={{ fontSize: 18, marginBottom: 8, padding: "0 8px" }}>Gestor APH</h2>
+            <div style={{ fontSize: 12, opacity: 0.7, padding: "0 8px", marginBottom: 16 }}>
+              {roleLabel}
+            </div>
+          </>
         )}
-      </div>
-    </aside>
+
+        {/* Navigation */}
+        <nav style={{ flex: 1 }}>
+          {navGroups.map((group) => (
+            <div key={group.label} style={{ marginBottom: collapsed ? 0 : 16 }}>
+              {!collapsed && (
+                <div style={{ fontSize: 11, textTransform: "uppercase", opacity: 0.5, padding: "0 8px", marginBottom: 4, letterSpacing: 1 }}>
+                  {group.label}
+                </div>
+              )}
+              {group.items
+                .filter((item) => roleLevel >= item.minRole)
+                .map((item) => (
+                  <a
+                    key={item.path}
+                    href={item.path}
+                    className="sidebar-link"
+                    style={{
+                      justifyContent: collapsed ? "center" : "flex-start",
+                      padding: collapsed ? "8px 0" : "8px 12px",
+                    }}
+                  >
+                    <span style={{ fontSize: 18 }}>{item.icon}</span>
+                    {!collapsed && <span>{item.label}</span>}
+                  </a>
+                ))}
+            </div>
+          ))}
+        </nav>
+
+        {/* Bottom: Profile */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 8 }}>
+          {!collapsed ? (
+            <div style={{ fontSize: 12, opacity: 0.7, padding: "0 8px" }}>
+              <div style={{ marginBottom: 2 }}>{user?.full_name}</div>
+              <div style={{ fontSize: 11 }}>{user?.email}</div>
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", fontSize: 18 }}>👤</div>
+          )}
+        </div>
+      </aside>
+      {/* Spacer when sidebar is collapsed */}
+      {collapsed && <div style={{ width: 64, flexShrink: 0 }} />}
+    </>
   );
 }

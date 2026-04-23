@@ -102,7 +102,7 @@ export default function AssemblyList() {
             <Input type="text" placeholder="Titulo" value={form.title} onChange={(v) => setForm({ ...form, title: v })} />
             <Input type="datetime-local" value={form.date} onChange={(v) => setForm({ ...form, date: v })} />
             <Input type="text" placeholder="Ubicacion" value={form.location || ""} onChange={(v) => setForm({ ...form, location: v })} />
-            <Input type="number" placeholder="Quorum %" value={form.quorum_required || ""} onChange={(v) => setForm({ ...form, quorum_required: parseInt(v) || 0 })} />
+            <Input type="number" placeholder="Quorum %" value={form.quorum_required ? String(form.quorum_required) : ""} onChange={(v) => setForm({ ...form, quorum_required: parseInt(v) || 0 })} />
             <Button variant="primary" disabled={createMutation.isPending || !form.title || !form.date} onClick={() => createMutation.mutate(form)}>
               {createMutation.isPending ? "Creando..." : "Guardar"}
             </Button>

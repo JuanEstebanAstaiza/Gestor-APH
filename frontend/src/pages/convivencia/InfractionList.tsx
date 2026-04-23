@@ -134,21 +134,17 @@ export default function InfractionList() {
         />
       )}
       {showResolve !== null && (
-        <Modal onClose={() => setShowResolve(null)}>
-          <Modal.Header>
-            <h3 style={{ marginTop: 0 }}>Resolver Infraccion</h3>
-          </Modal.Header>
-          <Modal.Body>
-            <p style={{ color: "var(--color-text-muted)" }}>Esta accion marcara la infraccion como resuelta.</p>
-          </Modal.Body>
-          <Modal.Footer>
+        <Modal isOpen={showResolve !== null} onClose={() => setShowResolve(null)} title="Resolver Infraccion" footer={
+          <>
             <Button variant="primary" style={{ background: "var(--color-success)", border: "none" }} disabled={resolveMutation.isPending} onClick={() => { resolveMutation.mutate(showResolve); setShowResolve(null); }}>
               {resolveMutation.isPending ? "Resolviendo..." : "Confirmar"}
             </Button>
             <Button variant="secondary" onClick={() => setShowResolve(null)}>
               Cancelar
             </Button>
-          </Modal.Footer>
+          </>
+        }>
+          <p style={{ color: "var(--color-text-muted)" }}>Esta accion marcara la infraccion como resuelta.</p>
         </Modal>
       )}
     </div>

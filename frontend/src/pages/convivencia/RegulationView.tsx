@@ -22,7 +22,7 @@ export default function RegulationView() {
   const chapters = (() => {
     if (!regulations) return [];
     const unique = new Set(regulations.map((r) => r.chapter).filter(Boolean));
-    return Array.from(unique);
+    return Array.from(unique) as string[];
   })();
 
   if (isLoading) return <p className="loading">Cargando reglamento...</p>;

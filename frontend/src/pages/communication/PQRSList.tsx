@@ -74,7 +74,6 @@ export default function PQRSList() {
             { key: "subject", label: "Asunto" },
             { key: "priority", label: "Prioridad" },
             { key: "status", label: "Estado" },
-            { key: "created_at", label: "Fecha" },
           ]}
           data={pqrs?.map((item) => ({
             ...item,
@@ -85,29 +84,22 @@ export default function PQRSList() {
                 {item.status}
               </span>
             ),
-            created_at: item.created_at?.slice(0, 10),
           })) || []}
           emptyMessage="No hay PQRS"
           onRowClick={(row) => setShowDetail(row.id as number)}
         />
       )}
       {showDetail !== null && currentItem && (
-        <Modal onClose={() => setShowDetail(null)}>
-          <Modal.Header>
-            <h3 style={{ marginTop: 0 }}>Detalle PQRS</h3>
-          </Modal.Header>
-          <Modal.Body>
-            <p><strong>Asunto:</strong> {currentItem.subject}</p>
-            <p><strong>Descripcion:</strong> {currentItem.description}</p>
-            <p><strong>Estado:</strong> {currentItem.status}</p>
-            <p><strong>Respuesta:</strong> {currentItem.response || "Sin respuesta"}</p>
-            <Textarea value={responseText} onChange={(v) => setResponseText(v)} placeholder="Agregar respuesta..." rows={3} />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="primary" style={{ background: "var(--color-success)", border: "none" }} disabled={updateMutation.isPending} onClick={() => { updateMutation.mutate({ id: showDetail, status: "resolved", response: responseText }); setShowDetail(null); }}>
-              {updateMutation.isPending ? "Actualizando..." : "Marcar Resuelto"}
-            </Button>
-          </Modal.Footer>
+        <Modal isOpen={showDetail !== null} onClose={() => setShowDetail(null)} title="Detalle PQRS" footer={
+          <Button variant="primary" style={{ background: "var(--color-success)", border: "none" }} disabled={updateMutation.isPending} onClick={() => { updateMutation.mutate({ id: showDetail, status: "resolved", response: responseText }); setShowDetail(null); }}>
+            {updateMutation.isPending ? "Actualizando..." : "Marcar Resuelto"}
+          </Button>
+        }>
+          <p><strong>Asunto:</strong> {currentItem.subject}</p>
+          <p><strong>Descripcion:</strong> {currentItem.description}</p>
+          <p><strong>Estado:</strong> {currentItem.status}</p>
+          <p><strong>Respuesta:</strong> {currentItem.response || "Sin respuesta"}</p>
+          <Textarea value={responseText} onChange={(v) => setResponseText(v)} placeholder="Agregar respuesta..." rows={3} />
         </Modal>
       )}
     </div>

@@ -35,7 +35,7 @@ const PRIORITY_OPTIONS = [
 export default function PQRSForm() {
   const { user } = useAuth();
   const [form, setForm] = useState<PQRSCreate>({
-    requester_id: user?.id ? parseInt(user.id) : 0,
+    requester_id: user?.id ?? 0,
     type: "peticion",
     subject: "",
     description: "",
@@ -55,7 +55,7 @@ export default function PQRSForm() {
         <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
         <h2 style={{ color: "var(--color-success)" }}>PQRS Radicado</h2>
         <p style={{ color: "var(--color-text-muted)" }}>Tu solicitud ha sido registrada correctamente.</p>
-        <Button variant="primary" onClick={() => { setSubmitted(false); setForm({ requester_id: user?.id ? parseInt(user.id) : 0, type: "peticion", subject: "", description: "", category: "otros", priority: "normal" }); }}>
+        <Button variant="primary" onClick={() => { setSubmitted(false); setForm({ requester_id: user?.id ?? 0, type: "peticion", subject: "", description: "", category: "otros", priority: "normal" }); }}>
           Nueva Solicitud
         </Button>
       </div>
@@ -73,7 +73,7 @@ export default function PQRSForm() {
           </div>
           <div>
             <label className="form-label">Categoria</label>
-            <Select value={form.category || "otros"} onChange={(v) => setForm({ ...form, category: v })} options={CATEGORY_OPTIONS} />
+            <Select value={form.category ?? "otros"} onChange={(v) => setForm({ ...form, category: v })} options={CATEGORY_OPTIONS} />
           </div>
           <div>
             <label className="form-label">Prioridad</label>
