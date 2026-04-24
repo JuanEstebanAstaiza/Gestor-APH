@@ -10,7 +10,7 @@ from src.models import Base
 class Provider(Base):
     __tablename__ = "providers"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     uuid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     type: Mapped[str] = mapped_column(String(50), nullable=False)
@@ -20,7 +20,7 @@ class Provider(Base):
     email: Mapped[str | None] = mapped_column(String(255), nullable=True)
     address: Mapped[str | None] = mapped_column(Text, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
-    is_active: Mapped[bool] = mapped_column(default=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -33,16 +33,16 @@ class Provider(Base):
 class ProviderContract(Base):
     __tablename__ = "provider_contracts"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    provider_id: Mapped[int] = mapped_column(ForeignKey("providers.id"), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    provider_id: Mapped[int] = mapped_column(Integer, ForeignKey("providers.id"), nullable=False)
     contract_name: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     start_date: Mapped[str] = mapped_column(Date, nullable=False)
     end_date: Mapped[str | None] = mapped_column(Date, nullable=True)
     value: Mapped[str | None] = mapped_column(String(20), nullable=True)
     status: Mapped[str] = mapped_column(String(20), default="active")
-    renewal_notice_days: Mapped[int] = mapped_column(default=30)
-    is_active: Mapped[bool] = mapped_column(default=True)
+    renewal_notice_days: Mapped[int] = mapped_column(Integer, default=30)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -54,9 +54,9 @@ class ProviderContract(Base):
 class MaintenanceAlert(Base):
     __tablename__ = "maintenance_alerts"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     uuid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, default=uuid.uuid4)
-    asset_id: Mapped[int] = mapped_column(ForeignKey("assets.id"), nullable=False)
+    asset_id: Mapped[int] = mapped_column(Integer, ForeignKey("assets.id"), nullable=False)
     provider_id: Mapped[int | None] = mapped_column(ForeignKey("providers.id"), nullable=True)
     alert_type: Mapped[str] = mapped_column(String(50), nullable=False)
     description: Mapped[str] = mapped_column(String(512), nullable=False)
@@ -66,10 +66,11 @@ class MaintenanceAlert(Base):
     completed_at: Mapped[str | None] = mapped_column(DateTime(timezone=True), nullable=True)
     notified_to: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     notes: Mapped[str | None] = mapped_column(String(512), nullable=True)
-    is_active: Mapped[bool] = mapped_column(default=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    asset = relationship("Asset")
+    asset = relationship("Asset", back_populates="maintenance_alerts")
     provider = relationship("Provider", back_populates="alerts")
+    notifier = relationship("User", back_populates="maintenance_alerts")
     notifier = relationship("User")

@@ -29,9 +29,9 @@ def send_communication(
     sender_id: int,
     recipient_id: int,
     comm_type: str,
-    subject: str | None = None,
     content: str,
+    subject: str | None = None,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    return communication_service.send_communication(sender_id, recipient_id, comm_type, subject, content)
+    return communication_service.send_communication(sender_id, recipient_id, comm_type, content, subject)

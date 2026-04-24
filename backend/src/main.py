@@ -6,11 +6,30 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from src.config import settings
+import src.models.user  # noqa: F401
+import src.models.refresh_token  # noqa: F401
+import src.models.visitor  # noqa: F401
+import src.models.authorization  # noqa: F401
+import src.models.census  # noqa: F401
+import src.models.resident_asset  # noqa: F401
+import src.models.resident_file  # noqa: F401
+import src.models.asset  # noqa: F401
+import src.models.document  # noqa: F401
+import src.models.communication  # noqa: F401
+import src.models.finance  # noqa: F401
+import src.models.reservation  # noqa: F401
+import src.models.assembly  # noqa: F401
+import src.models.provider  # noqa: F401
+import src.models.activity_log  # noqa: F401
 from src.routers import auth, users, visitors, authorizations, census, assets, documents, categories, audit, finance, pqrs, faq, circulars, communications, reservations, assemblies, tasks, providers, maintenance
 
 
 engine = create_engine(settings.database_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Ensure all mappers are configured before any query
+from src.models import Base
+Base.registry.configure()
 
 
 @asynccontextmanager

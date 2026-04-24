@@ -12,12 +12,12 @@ dependencies = [
     "pydantic>=2.10.0",
     "pydantic-settings>=2.7.0",
     "python-jose[cryptography]>=3.3.0",
-    "passlib[bcrypt]>=1.7.4",
+    "passlib>=1.7.4",
     "python-multipart>=0.0.20",
     "python-dotenv>=1.0.1",
     "email-validator>=2.2.0",
     "aiosmtplib>=3.0.2",
-    "bcrypt>=4.2.0",
+    "bcrypt>=4.0.1,<5.0.0",
     "greenlet>=3.1.1",
 ]
 
@@ -40,6 +40,9 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, String, Text, func
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -8,9 +8,9 @@ from src.models import Base
 class PQRS(Base):
     __tablename__ = "pqrs"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     uuid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, default=__import__("uuid").uuid4)
-    requester_id: Mapped[int] = mapped_column(ForeignKey("census_residents.id"), nullable=False)
+    requester_id: Mapped[int] = mapped_column(Integer, ForeignKey("census_residents.id"), nullable=False)
     type: Mapped[str] = mapped_column(Enum("peticion", "queja", "reclamo", "sugerencia"), nullable=False)
     category: Mapped[str | None] = mapped_column(String(50), nullable=True)
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -32,8 +32,8 @@ class PQRS(Base):
 class PQRSAttachment(Base):
     __tablename__ = "pqrs_attachments"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    pqrs_id: Mapped[int] = mapped_column(ForeignKey("pqrs.id", ondelete="CASCADE"))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    pqrs_id: Mapped[int] = mapped_column(Integer, ForeignKey("pqrs.id", ondelete="CASCADE"))
     file_name: Mapped[str] = mapped_column(String(255), nullable=False)
     file_path: Mapped[str] = mapped_column(String(500), nullable=False)
     file_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
@@ -45,7 +45,7 @@ class PQRSAttachment(Base):
 class FAQEntry(Base):
     __tablename__ = "faq_entries"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     question: Mapped[str] = mapped_column(String(500), nullable=False)
     answer: Mapped[str] = mapped_column(Text, nullable=False)
     category: Mapped[str | None] = mapped_column(String(50), nullable=True)
@@ -61,7 +61,7 @@ class FAQEntry(Base):
 class Circular(Base):
     __tablename__ = "circulars"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     uuid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, default=__import__("uuid").uuid4)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
@@ -80,9 +80,9 @@ class Circular(Base):
 class Communication(Base):
     __tablename__ = "communications"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    sender_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    recipient_id: Mapped[int] = mapped_column(ForeignKey("census_residents.id"), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    sender_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    recipient_id: Mapped[int] = mapped_column(Integer, ForeignKey("census_residents.id"), nullable=False)
     type: Mapped[str] = mapped_column(String(20), nullable=False)
     subject: Mapped[str | None] = mapped_column(String(255), nullable=True)
     content: Mapped[str] = mapped_column(Text, nullable=False)
@@ -91,4 +91,4 @@ class Communication(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    sender = relationship("User")
+    sender = relationship("User", back_populates="communications_sent")

@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Boolean, DateTime, Enum, String, func
+from sqlalchemy import Boolean, DateTime, Enum, Integer, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -10,7 +10,7 @@ from src.models import Base
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     uuid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(512), nullable=False)
@@ -27,3 +27,19 @@ class User(Base):
     refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")
     census = relationship("CensusResident", back_populates="user", uselist=False)
     activity_log = relationship("ActivityLog", back_populates="user")
+    assemblies_created = relationship("Assembly", back_populates="creator")
+    agendas_presented = relationship("Agenda", back_populates="presenter")
+    minutes_created = relationship("Minute", back_populates="creator")
+    minutes_approved = relationship("Minute", back_populates="approver")
+    tasks_assigned = relationship("TaskFollowup", back_populates="assignee")
+    documents_created = relationship("Document", back_populates="creator")
+    documents_changed = relationship("DocumentVersion", back_populates="changer")
+    resident_files = relationship("ResidentFile", back_populates="uploader")
+    maintenance_alerts = relationship("MaintenanceAlert", back_populates="notifier")
+    regulations_updated = relationship("Regulation", back_populates="updated_by_user")
+    communications_sent = relationship("Communication", back_populates="sender")
+    agendas_presented = relationship("Agenda", back_populates="presenter")
+    maintenance_alerts = relationship("MaintenanceAlert", back_populates="notifier")
+    documents_created = relationship("Document", back_populates="creator")
+    documents_changed = relationship("DocumentVersion", back_populates="changer")
+    resident_files = relationship("ResidentFile", back_populates="uploader")

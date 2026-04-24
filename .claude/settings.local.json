@@ -38,7 +38,10 @@
       "Bash(docker --version)",
       "Bash(C:/Users/akali/AppData/Local/Microsoft/WindowsApps/python *)",
       "Bash(npx tsc *)",
-      "Bash(npx vite *)"
+      "Bash(npx vite *)",
+      "Bash(npm run *)",
+      "Bash(PGPASSWORD=postgres psql *)",
+      "Bash(pkill -f uvicorn)"
     ]
   }
 }

@@ -21,6 +21,37 @@ import ShareLinkView from "./pages/documents/ShareLinkView";
 import AuditLog from "./pages/audit/AuditLog";
 import Settings from "./pages/settings/Settings";
 import Profile from "./pages/users/Profile";
+import InvoiceDashboard from "./pages/finance/InvoiceDashboard";
+import PaymentHistory from "./pages/finance/PaymentHistory";
+import BalanceView from "./pages/finance/BalanceView";
+import PazYSalvo from "./pages/finance/PazYSalvo";
+import ImportData from "./pages/finance/ImportData";
+import FAQView from "./pages/communication/FAQView";
+import FAQAdmin from "./pages/communication/FAQAdmin";
+import PQRSList from "./pages/communication/PQRSList";
+import PQRSForm from "./pages/communication/PQRSForm";
+import CircularDashboard from "./pages/communication/CircularDashboard";
+import CommunicationHistory from "./pages/communication/CommunicationHistory";
+import ReservationList from "./pages/reservations/ReservationList";
+import ReservationForm from "./pages/reservations/ReservationForm";
+import CalendarView from "./pages/reservations/CalendarView";
+import InfractionList from "./pages/convivencia/InfractionList";
+import InfractionForm from "./pages/convivencia/InfractionForm";
+import RegulationView from "./pages/convivencia/RegulationView";
+import AssemblyList from "./pages/assemblies/AssemblyList";
+import AssemblyDetail from "./pages/assemblies/AssemblyDetail";
+import AgendaBuilder from "./pages/assemblies/AgendaBuilder";
+import AttendanceTracker from "./pages/assemblies/AttendanceTracker";
+import VoteForm from "./pages/assemblies/VoteForm";
+import MinutesView from "./pages/assemblies/MinutesView";
+import TaskList from "./pages/assemblies/TaskList";
+import TaskDetail from "./pages/assemblies/TaskDetail";
+import ProviderList from "./pages/providers/ProviderList";
+import ProviderForm from "./pages/providers/ProviderForm";
+import ContractView from "./pages/providers/ContractView";
+import AlertDashboard from "./pages/maintenance/AlertDashboard";
+import AlertForm from "./pages/maintenance/AlertForm";
+import MaintenanceCalendar from "./pages/maintenance/MaintenanceCalendar";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -247,6 +278,51 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Finance */}
+        <Route path="/finance" element={<ProtectedRoute><Layout><InvoiceDashboard /></Layout></ProtectedRoute>} />
+        <Route path="/finance/payments" element={<ProtectedRoute><Layout><PaymentHistory /></Layout></ProtectedRoute>} />
+        <Route path="/finance/balance" element={<ProtectedRoute><Layout><BalanceView /></Layout></ProtectedRoute>} />
+        <Route path="/finance/pazysalvo" element={<ProtectedRoute><Layout><PazYSalvo /></Layout></ProtectedRoute>} />
+        <Route path="/finance/import" element={<ProtectedRoute><Layout><ImportData /></Layout></ProtectedRoute>} />
+
+        {/* Communication */}
+        <Route path="/communication" element={<ProtectedRoute><Layout><PQRSList /></Layout></ProtectedRoute>} />
+        <Route path="/communication/new" element={<ProtectedRoute><Layout><PQRSForm /></Layout></ProtectedRoute>} />
+        <Route path="/communication/faq" element={<ProtectedRoute><Layout><FAQView /></Layout></ProtectedRoute>} />
+        <Route path="/communication/faq/admin" element={<ProtectedRoute><Layout><FAQAdmin /></Layout></ProtectedRoute>} />
+        <Route path="/communication/circulars" element={<ProtectedRoute><Layout><CircularDashboard /></Layout></ProtectedRoute>} />
+        <Route path="/communication/history" element={<ProtectedRoute><Layout><CommunicationHistory /></Layout></ProtectedRoute>} />
+
+        {/* Reservations */}
+        <Route path="/reservations" element={<ProtectedRoute><Layout><ReservationList /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/new" element={<ProtectedRoute><Layout><ReservationForm /></Layout></ProtectedRoute>} />
+        <Route path="/reservations/calendar" element={<ProtectedRoute><Layout><CalendarView /></Layout></ProtectedRoute>} />
+
+        {/* Convivencia */}
+        <Route path="/convivencia" element={<ProtectedRoute><Layout><InfractionList /></Layout></ProtectedRoute>} />
+        <Route path="/convivencia/new" element={<ProtectedRoute><Layout><InfractionForm /></Layout></ProtectedRoute>} />
+        <Route path="/convivencia/regulations" element={<ProtectedRoute><Layout><RegulationView /></Layout></ProtectedRoute>} />
+
+        {/* Assemblies */}
+        <Route path="/assemblies" element={<ProtectedRoute><Layout><AssemblyList /></Layout></ProtectedRoute>} />
+        <Route path="/assemblies/:id" element={<ProtectedRoute><Layout><AssemblyDetail /></Layout></ProtectedRoute>} />
+        <Route path="/assemblies/:id/agenda" element={<ProtectedRoute><Layout><AgendaBuilder /></Layout></ProtectedRoute>} />
+        <Route path="/assemblies/:id/attendance" element={<ProtectedRoute><Layout><AttendanceTracker /></Layout></ProtectedRoute>} />
+        <Route path="/assemblies/:id/vote/:agendaId" element={<ProtectedRoute><Layout><VoteForm /></Layout></ProtectedRoute>} />
+        <Route path="/assemblies/:id/minutes" element={<ProtectedRoute><Layout><MinutesView /></Layout></ProtectedRoute>} />
+        <Route path="/assemblies/:id/tasks" element={<ProtectedRoute><Layout><TaskList /></Layout></ProtectedRoute>} />
+        <Route path="/assemblies/:id/tasks/:taskId" element={<ProtectedRoute><Layout><TaskDetail /></Layout></ProtectedRoute>} />
+
+        {/* Providers */}
+        <Route path="/directories" element={<ProtectedRoute><Layout><ProviderList /></Layout></ProtectedRoute>} />
+        <Route path="/directories/new" element={<ProtectedRoute><Layout><ProviderForm /></Layout></ProtectedRoute>} />
+        <Route path="/directories/:id" element={<ProtectedRoute><Layout><ContractView /></Layout></ProtectedRoute>} />
+
+        {/* Maintenance */}
+        <Route path="/maintenance" element={<ProtectedRoute><Layout><AlertDashboard /></Layout></ProtectedRoute>} />
+        <Route path="/maintenance/new" element={<ProtectedRoute><Layout><AlertForm /></Layout></ProtectedRoute>} />
+        <Route path="/maintenance/calendar" element={<ProtectedRoute><Layout><MaintenanceCalendar /></Layout></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
