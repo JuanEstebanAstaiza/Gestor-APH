@@ -11,7 +11,7 @@
 | 14 | Modulo F — Asambleas y Consejo | COMPLETADA | [PHASE_14_MODULO_F_ASAMBLEAS.md](Documentacion/fases/PHASE_14_MODULO_F_ASAMBLEAS.md) |
 | 15 | Modulo D — Directorio de Proveedores | COMPLETADA | [PHASE_15_MODULO_D_PROVEEDORES.md](Documentacion/fases/PHASE_15_MODULO_D_PROVEEDORES.md) |
 | 16 | UI/UX refinement | COMPLETADA | [PHASE_16_UI_UX.md](Documentacion/fases/PHASE_16_UI_UX.md) |
-| 17 | Testing | PENDIENTE | [PHASE_17_TESTING.md](Documentacion/fases/PHASE_17_TESTING.md) |
+| 17 | Testing | EN PROGRESO | [PHASE_17_TESTING.md](Documentacion/fases/PHASE_17_TESTING.md) · [Estado](Documentacion/fases/PHASE_17_TESTING_STATUS.md) |
 | 18 | Docker production | PENDIENTE | [PHASE_18_DOCKER_PRODUCTION.md](Documentacion/fases/PHASE_18_DOCKER_PRODUCTION.md) |
 
 ## Resumen Fase 13 — Modulo G
